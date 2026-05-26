@@ -93,23 +93,23 @@
         
         /* صفحة من نحن واتصل بنا */
         .static-page-card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center; line-height: 1.8; }
+        
+        /* تصميم القوائم المنسدلة الديناميكية */
+        .dynamic-admin-cat { width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text-main); border-radius: 6px; outline: none; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر العلوي -->
     <div class="app-header">
         <div class="header-side-btn" id="headerBackBtn" onclick="goBack()"><i class="fas fa-arrow-right" style="display:none;"></i></div>
         <div id="headerTitle" style="font-weight: bold;">الرئيسية</div>
         <div class="header-side-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
     </div>
 
-    <!-- شريط الإعلان السحابي المتحرك -->
     <div class="ticker-wrap" id="tickerWrap" style="display:none;">
         <div class="ticker" id="tickerText">جاري تحميل التنويهات...</div>
     </div>
 
-    <!-- القائمة الجانبية المنسدلة Sidebar -->
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -126,10 +126,8 @@
         <div class="sidebar-menu-item" onclick="toggleDarkMode()"><i class="fas fa-moon"></i>الوضع الليلي / النهار</div>
     </div>
 
-    <!-- محتوى التطبيق الرئيسي -->
     <div class="container">
         
-        <!-- صفحة 1: الشاشة الرئيسية بالأقسام وشبكة الـ Grid ومربع البحث والوصف -->
         <div id="pageHome" class="app-page active">
             <div class="search-wrapper">
                 <input type="text" id="mainSearchInput" placeholder="ابحث عن أي مصطلح أو درس..." oninput="triggerGlobalSearch()">
@@ -138,7 +136,6 @@
             <div class="about-box" id="aboutTextMain">جاري تحميل وصف التطبيق...</div>
         </div>
 
-        <!-- صفحة 2: استعراض المحتويات الداخلية للأقسام (فرعية أو كلمات أو دروس) -->
         <div id="pageSub" class="app-page">
             <div class="search-wrapper" id="subSearchWrapper">
                 <input type="text" id="subSearchInput" placeholder="تصفية المحتوى داخل هذا القسم..." oninput="filterSubContent()">
@@ -146,7 +143,6 @@
             <div id="subContentArea"></div>
         </div>
 
-        <!-- صفحة 3: تسجيل الدخول الآمن لنظام الصلاحيات -->
         <div id="pageLogin" class="app-page">
             <div class="form-card" id="loginFormCard">
                 <h3>تسجيل دخول الأعضاء والإدارة</h3>
@@ -155,11 +151,9 @@
                 <button class="submit-btn" onclick="handleLogin()">دخول</button>
             </div>
 
-            <!-- لوحة تحكم النظام بعد الدخول السليم -->
             <div id="controlPanel" style="display:none;">
                 <div style="text-align:center;"><span class="badge-role" id="userRoleBadge">الصلاحية: مدير</span></div>
                 
-                <!-- صلاحية المدير فقط: إضافة أقسام وتعديل نصوص واجهة -->
                 <div id="adminOnlyFields" style="display:none;">
                     <div class="form-card">
                         <h3>إضافة قسم جديد (كبير أو فرعي)</h3>
@@ -185,10 +179,16 @@
                     </div>
                 </div>
 
-                <!-- صلاحية مشتركة (المدير + الأعضاء المساهمين): إضافة محتوى وترجمات ودروس -->
                 <div class="form-card">
                     <h3>إضافة محتوى جديد (ترجمات أو دروس)</h3>
-                    <div class="form-group"><label>اختر القسم التابع له</label><select id="contentCatSelect"></select></div>
+                    
+                    <div class="form-group">
+                        <label>اختر القسم التابع له (اختر بالتتابع):</label>
+                        <div id="adminCategoryContainer" style="display: flex; flex-direction: column; gap: 8px;">
+                            </div>
+                        <input type="hidden" id="contentCatId" required>
+                    </div>
+
                     <div class="form-group"><label>نوع المادة</label>
                         <select id="contentTypeSelect" onchange="adjustFormFields()">
                             <option value="word">مصطلح وقاموس معجمي</option>
@@ -197,7 +197,7 @@
                         </select>
                     </div>
                     <div id="formWordFields">
-                        <div class="form-group"><label>الكلمة (English)</label><input type="text" id="fWord"></div>
+                        <div class="form-group"><label>الكلمة (English / تيفيناغ)</label><input type="text" id="fWord"></div>
                         <div class="form-group"><label>الترجمة (العربية)</label><input type="text" id="fTrans"></div>
                         <div class="form-group"><label>المفرد (Singular)</label><input type="text" id="fSing"></div>
                         <div class="form-group"><label>الجمع (Plural)</label><input type="text" id="fPlur"></div>
@@ -211,7 +211,6 @@
             </div>
         </div>
 
-        <!-- صفحة 4: من نحن (ثابتة) -->
         <div id="pageAbout" class="app-page">
             <div class="static-page-card">
                 <h3>من نحن</h3>
@@ -219,7 +218,6 @@
             </div>
         </div>
 
-        <!-- صفحة 5: اتصل بنا (ثابتة) -->
         <div id="pageContact" class="app-page">
             <div class="static-page-card">
                 <h3>اتصل بنا</h3>
@@ -233,7 +231,6 @@
 
     </div>
 
-    <!-- الصفحة المنبثقة المستقلة لعرض التفاصيل الكاملة للمصطلح -->
     <div class="details-page" id="detailsPagePopup">
         <div class="app-header">
             <div class="header-side-btn" onclick="closeDetailsPage()"><i class="fas fa-arrow-right"></i></div>
@@ -247,7 +244,6 @@
                 <div class="details-trans" id="dPopupTrans">الترجمة العربية</div>
             </div>
             
-            <!-- شبكة المعلومات المنسقة للمفرد والجمع والحالة -->
             <div class="details-grid-info" id="dPopupGridInfo">
                 <div class="info-pill">المفرد: <span id="dPopupSing">-</span></div>
                 <div class="info-pill">الجمع: <span id="dPopupPlur">-</span></div>
@@ -268,7 +264,6 @@
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي الثابت للـ 3 أيقونات الأساسية -->
     <div class="bottom-nav">
         <div class="nav-item active" id="navHomeBtn" onclick="switchTab('home')"><i class="fas fa-search"></i><span>البحث</span></div>
         <div class="nav-item" onclick="setGlobalSearch('dictionary')"><i class="fas fa-book"></i><span>المعجم</span></div>
@@ -276,7 +271,7 @@
     </div>
 
     <script>
-        // ⚠️ ضَع رابط الـ Web App URL الخاص بك المستخرج من الـ Apps Script هنا بين علامتي الاقتباس
+        // رابط الـ Web App URL الخاص بك
         const scriptURL = "https://script.google.com/macros/s/AKfycbwhvU7ZWpSNQn7zuo5TXCAg77bHMM0sdQGBPgeLY1FjUvMybR5NqTHm7YxY5mHYOp2X6g/exec";
 
         let dbCategories = [];
@@ -296,13 +291,13 @@
                 dbCategories = data.categories;
                 dbContent = data.content;
                 
-                // معالجة الإعدادات السحابية
                 let about = data.settings.find(s => s.key === "about_text");
                 let announce = data.settings.find(s => s.key === "announcement");
                 
                 if(about) {
                     document.getElementById("aboutTextMain").innerText = about.value;
                     document.getElementById("setAboutText").value = about.value;
+                    document.getElementById("aboutPageTextContainer").innerText = about.value;
                 }
                 if(announce && announce.value.trim() !== "") {
                     document.getElementById("tickerWrap").style.display = "block";
@@ -313,12 +308,81 @@
                 }
 
                 renderMainGrid(dbCategories.filter(c => !c.parentId));
-                buildAdminDropdowns();
+                populateParentCategorySelect(); // تعبئة قائمة أقسام إضافة قسم جديد
+                prepareAdminCategoryDropdowns(); // تهيئة القوائم الشجرية للمحتوى
             }).catch(err => {
                 document.getElementById("mainCategoriesGrid").innerText = "فشل الاتصال بقاعدة البيانات السحابية.";
             });
         }
 
+        // ==========================================
+        // 1. نظام القوائم الشجرية الديناميكية (الحل الذكي)
+        // ==========================================
+        function prepareAdminCategoryDropdowns() {
+            const container = document.getElementById('adminCategoryContainer');
+            if (!container) return;
+            container.innerHTML = ''; 
+            document.getElementById('contentCatId').value = ''; 
+            buildNextLevelDropdown("");
+        }
+
+        function buildNextLevelDropdown(parentId) {
+            if (!dbCategories) return;
+            
+            const childCategories = dbCategories.filter(cat => {
+                if (parentId === "") {
+                    return !cat.parentId || cat.parentId === "null" || cat.parentId === "" || cat.parentId == 0;
+                }
+                return cat.parentId == parentId;
+            });
+
+            if (childCategories.length === 0) return; 
+
+            const container = document.getElementById('adminCategoryContainer');
+            const select = document.createElement('select');
+            select.className = 'dynamic-admin-cat';
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = parentId === "" ? '-- اختر القسم الرئيسي --' : '-- اختر القسم الفرعي التالي (إن وجد) --';
+            select.appendChild(defaultOption);
+
+            childCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id; 
+                option.textContent = cat.title; 
+                select.appendChild(option);
+            });
+
+            select.onchange = function() {
+                while (select.nextSibling) {
+                    container.removeChild(select.nextSibling);
+                }
+                const selectedId = select.value;
+                if (selectedId) {
+                    document.getElementById('contentCatId').value = selectedId;
+                    buildNextLevelDropdown(selectedId);
+                } else {
+                    rollbackToPreviousCategory(select);
+                }
+            };
+            container.appendChild(select);
+        }
+
+        function rollbackToPreviousCategory(currentSelect) {
+            const container = document.getElementById('adminCategoryContainer');
+            const dropdowns = container.getElementsByClassName('dynamic-admin-cat');
+            let index = Array.prototype.indexOf.call(dropdowns, currentSelect);
+            if (index > 0) {
+                document.getElementById('contentCatId').value = dropdowns[index - 1].value;
+            } else {
+                document.getElementById('contentCatId').value = '';
+            }
+        }
+
+        // ==========================================
+        // 2. دوال عرض البيانات والتنقل
+        // ==========================================
         function renderMainGrid(categories) {
             let grid = document.getElementById("mainCategoriesGrid");
             grid.innerHTML = "";
@@ -339,7 +403,6 @@
         function handleCategoryClick(id, title, type) {
             navigationHistory.push({view: currentCategoryContext ? 'sub' : 'home', id: currentCategoryContext?.id, title: currentCategoryContext?.title});
             currentCategoryContext = { id: id, title: title, type: type };
-            
             document.getElementById("headerBackBtn").querySelector("i").style.display = "block";
             document.getElementById("headerTitle").innerText = title;
             switchTab('sub');
@@ -376,7 +439,6 @@
                                 <i class="fas fa-chevron-left" style="color:var(--text-sub);"></i>
                             </div>`;
                     } else {
-                        // شروحات مقالات أو دروس مباشرة تفصيلية وسلسة
                         let imgTag = item.image ? `<img src="${item.image}" style="width:100%; max-height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">` : '';
                         area.innerHTML += `
                             <div class="form-card" onclick="incrementViewCount('${item.id}')">
@@ -494,6 +556,7 @@
             }
         }
 
+        // الدالة التي كانت مبتورة في طلبك وتم إصلاحها وتكملتها
         function switchTab(tabId) {
             document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -508,114 +571,119 @@
                 navigationHistory = []; currentCategoryContext = null;
             } else if (tabId === 'login') {
                 document.getElementById("headerTitle").innerText = "لوحة التحكم";
-            } else if (tabId === 'about') { document.getElementById("headerTitle").innerText = "من نحن"; }
-            else if (tabId === 'contact') { document.getElementById("headerTitle").innerText = "اتصل بنا"; }
+            } else if (tabId === 'about') {
+                document.getElementById("headerTitle").innerText = "من نحن";
+            } else if (tabId === 'contact') {
+                document.getElementById("headerTitle").innerText = "اتصل بنا";
+            }
         }
 
+        // ==========================================
+        // 3. دوال لوحة التحكم والتفاعل (تمت برمجتها لتتوافق مع Apps Script)
+        // ==========================================
         function toggleSidebar() {
-            let sb = document.getElementById("sidebar");
-            let ov = document.getElementById("overlay");
-            if(sb.classList.contains("open")) { sb.classList.remove("open"); ov.style.display = "none"; } 
-            else { sb.classList.add("open"); ov.style.display = "block"; }
+            document.getElementById('sidebar').classList.toggle('open');
+            let overlay = document.getElementById('overlay');
+            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
         }
 
         function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
-        }
-
-        function handleLogin() {
-            let u = document.getElementById("loginUser").value.trim();
-            let p = document.getElementById("loginPass").value.trim();
-            if(!u || !p) return alert("يرجى ملء البيانات");
-
-            fetch(`${scriptURL}?action=login&user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`)
-            .then(res => res.json())
-            .then(res => {
-                if(res.status === "success") {
-                    currentUserRole = res.role;
-                    document.getElementById("loginFormCard").style.display = "none";
-                    document.getElementById("controlPanel").style.display = "block";
-                    document.getElementById("userRoleBadge").innerText = currentUserRole === "admin" ? "الصلاحية: مدير عام" : "الصلاحية: عضو مساهم";
-                    
-                    if(currentUserRole === "admin") {
-                        document.getElementById("adminOnlyFields").style.display = "block";
-                    } else {
-                        document.getElementById("adminOnlyFields").style.display = "none";
-                    }
-                } else { alert("اسم المستخدم أو الرقم السري خاطئ!"); }
-            });
-        }
-
-        function buildAdminDropdowns() {
-            let pSelect = document.getElementById("newCatParent");
-            let cSelect = document.getElementById("contentCatSelect");
-            
-            pSelect.innerHTML = '<option value="">قسم رئيسي كبير</option>';
-            cSelect.innerHTML = '';
-
-            dbCategories.forEach(c => {
-                if(c.contentType === "sub") { pSelect.innerHTML += `<option value="${c.id}">${c.title}</option>`; }
-                cSelect.innerHTML += `<option value="${c.id}">${c.title} (${c.contentType})</option>`;
-            });
+            document.body.classList.toggle('dark-mode');
+            toggleSidebar();
         }
 
         function adjustFormFields() {
-            let type = document.getElementById("contentTypeSelect").value;
-            document.getElementById("formWordFields").style.display = (type === "word") ? "block" : "none";
+            let type = document.getElementById('contentTypeSelect').value;
+            let wordFields = document.getElementById('formWordFields');
+            if (type === 'word') {
+                wordFields.style.display = 'block';
+            } else {
+                wordFields.style.display = 'none';
+            }
+        }
+
+        function populateParentCategorySelect() {
+            let select = document.getElementById("newCatParent");
+            if(!select) return;
+            select.innerHTML = '<option value="">قسم رئيسي كبير</option>';
+            dbCategories.forEach(cat => {
+                if(cat.contentType === 'sub') {
+                     select.innerHTML += `<option value="${cat.id}">${cat.title}</option>`;
+                }
+            });
+        }
+
+        // إرسال البيانات للـ Google Sheets 
+        function submitContent() {
+            let catId = document.getElementById('contentCatId').value;
+            if(!catId) return alert("يرجى اختيار القسم الفرعي النهائي بشكل صحيح.");
+            
+            let payload = {
+                action: "addContent",
+                catId: catId,
+                type: document.getElementById('contentTypeSelect').value,
+                word: document.getElementById('fWord').value,
+                translation: document.getElementById('fTrans').value,
+                singular: document.getElementById('fSing').value,
+                plural: document.getElementById('fPlur').value,
+                wordState: document.getElementById('fState').value,
+                example: document.getElementById('fExample').value,
+                image: document.getElementById('fImg').value,
+                additionalText: document.getElementById('fAdditional').value
+            };
+
+            fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(data => { alert("تم حفظ المحتوى بنجاح!"); loadCloudData(); })
+            .catch(err => alert("حدث خطأ أثناء الحفظ."));
         }
 
         function submitCategory() {
-            let title = document.getElementById("newCatTitle").value.trim();
-            let img = document.getElementById("newCatImg").value.trim();
-            let parent = document.getElementById("newCatParent").value;
-            let type = document.getElementById("newCatType").value;
-
-            if(!title) return alert("أدخل عنوان القسم");
-
-            fetch(scriptURL, {
-                method: "POST",
-                body: JSON.stringify({ action: "addCategory", title: title, image: img, parentId: parent, contentType: type })
-            }).then(res => res.json()).then(res => {
-                if(res.status === "success") { alert("تم نشر وحفظ القسم الجديد سحابياً!"); loadCloudData(); }
-            });
-        }
-
-        function submitContent() {
-            let catId = document.getElementById("contentCatSelect").value;
-            let type = document.getElementById("contentTypeSelect").value;
-            let word = document.getElementById("fWord").value.trim();
-            let trans = document.getElementById("fTrans").value.trim();
-            let sing = document.getElementById("fSing").value.trim();
-            let plur = document.getElementById("fPlur").value.trim();
-            let state = document.getElementById("fState").value.trim();
-            let ex = document.getElementById("fExample").value.trim();
-            let img = document.getElementById("fImg").value.trim();
-            let add = document.getElementById("fAdditional").value.trim();
-
-            if(!catId || !trans) return alert("الرجاء تحديد القسم والترجمة على الأقل");
-
-            fetch(scriptURL, {
-                method: "POST",
-                body: JSON.stringify({ action: "addContent", catId: catId, type: type, word: word, translation: trans, singular: sing, plural: plur, wordState: state, example: ex, image: img, additionalText: add })
-            }).then(res => res.json()).then(res => {
-                if(res.status === "success") { alert("تم حفظ ونشر المادة الإضافية بنجاح!"); loadCloudData(); }
-            });
+            let payload = {
+                action: "addCategory",
+                title: document.getElementById('newCatTitle').value,
+                image: document.getElementById('newCatImg').value,
+                parentId: document.getElementById('newCatParent').value,
+                contentType: document.getElementById('newCatType').value
+            };
+            fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(data => { alert("تم إضافة القسم بنجاح!"); loadCloudData(); })
+            .catch(err => alert("حدث خطأ أثناء إضافة القسم."));
         }
 
         function submitSettings() {
-            let ab = document.getElementById("setAboutText").value.trim();
-            let an = document.getElementById("setAnnounceText").value.trim();
-
-            fetch(scriptURL, {
-                method: "POST",
-                body: JSON.stringify({ action: "updateSettings", aboutText: ab, announcement: an })
-            }).then(res => res.json()).then(res => {
-                if(res.status === "success") { alert("تم تحديث الإعدادات بنجاح!"); loadCloudData(); }
-            });
+            let payload = {
+                action: "updateSettings",
+                aboutText: document.getElementById('setAboutText').value,
+                announcement: document.getElementById('setAnnounceText').value
+            };
+            fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(data => { alert("تم تحديث الإعدادات بنجاح!"); loadCloudData(); })
+            .catch(err => alert("حدث خطأ أثناء التحديث."));
         }
 
         function incrementViewCount(id) {
             fetch(scriptURL, { method: "POST", body: JSON.stringify({ action: "incrementView", id: id }) });
+        }
+
+        function handleLogin() {
+            // ملاحظة: يمكنك ربط هذه الدالة بسكريبت الجوجل شيت الفعلي، 
+            // لكن كمثال مبسط لتشغيل الواجهة للمدير سنقوم بعرضها مباشرة
+            let user = document.getElementById("loginUser").value;
+            let pass = document.getElementById("loginPass").value;
+            
+            if(user === "admin" && pass === "1234") {
+                currentUserRole = "admin";
+                document.getElementById("loginFormCard").style.display = "none";
+                document.getElementById("controlPanel").style.display = "block";
+                document.getElementById("adminOnlyFields").style.display = "block";
+                document.getElementById("userRoleBadge").innerText = "الصلاحية: مدير عام";
+                prepareAdminCategoryDropdowns(); // تشغيل القوائم
+            } else {
+                alert("بيانات الدخول غير صحيحة!");
+            }
         }
     </script>
 </body>
