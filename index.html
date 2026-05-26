@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيقي الاحترافي الشامل</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50; --accent: #e67e22; --bg: #f5f6fa; --card-bg: #ffffff;
+            --text-main: #2d3436; --text-sub: #636e72; --border: #edf2f7;
+        }
+        .dark-mode {
+            --primary: #1a252f; --accent: #d35400; --bg: #1a1a1a; --card-bg: #2d2d2d;
+            --text-main: #f5f6fa; --text-sub: #b2bec3; --border: #404040;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text-main); transition: 0.3s; }
+        
+        /* الهيدر العلوي */
+        .app-header { 
+            background: linear-gradient(135deg, var(--primary), #1a252f); 
+            color: white; padding: 15px 20px; text-align: center; font-size: 18px; font-weight: bold; position: relative; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-side-btn { color: white; cursor: pointer; font-size: 20px; width: 30px; text-align: right; }
+
+        /* شريط الإعلان المتحرك */
+        .ticker-wrap { background: var(--accent); color: white; padding: 6px 0; overflow: hidden; font-size: 14px; font-weight: bold; }
+        .ticker { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; padding-left: 100%; }
+        @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+        .container { max-width: 600px; margin: 15px auto; padding: 0 15px; margin-bottom: 80px; }
+        .app-page { display: none; animation: fadeIn 0.3s ease; }
+        .app-page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* البحث الخارق */
+        .search-wrapper { margin-bottom: 20px; }
+        .search-wrapper input { width: 100%; padding: 12px 20px; border: 2px solid var(--border); border-radius: 30px; outline: none; font-size: 15px; background: var(--card-bg); color: var(--text-main); box-sizing: border-box; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+
+        /* شبكة الأقسام (المربعات والمستطيلات المتجاورة) */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .cat-card { background: var(--card-bg); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; text-align: center; transition: 0.2s; border: 1px solid var(--border); }
+        .cat-card:active { transform: scale(0.96); }
+        .cat-card img { width: 100%; height: 110px; object-fit: cover; background: #ddd; }
+        .cat-card h3 { margin: 12px 5px; font-size: 15px; color: var(--text-main); }
+
+        /* القائمة اللستة للمواد والترجمات */
+        .item-list-card { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid var(--border); border-right: 5px solid var(--accent); }
+        .item-list-card h4 { margin: 0; font-size: 16px; }
+        .item-list-card p { margin: 5px 0 0 0; color: var(--text-sub); font-size: 14px; }
+
+        /* النص التعريفي أسفل التطبيق */
+        .about-box { background: var(--card-bg); padding: 15px; border-radius: 12px; text-align: center; margin-top: 25px; border: 1px solid var(--border); color: var(--text-sub); font-size: 14px; line-height: 1.6; }
+
+        /* القائمة الجانبية المنسدلة Sidebar */
+        .sidebar { position: fixed; top: 0; right: -280px; width: 260px; height: 100%; background: var(--card-bg); z-index: 3000; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: 0.3s; padding: 20px; box-sizing: border-box; }
+        .sidebar.open { right: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px; }
+        .sidebar-menu-item { display: flex; align-items: center; padding: 12px; color: var(--text-main); text-decoration: none; font-size: 15px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
+        .sidebar-menu-item:hover { background: var(--bg); }
+        .sidebar-menu-item i { margin-left: 12px; width: 20px; color: var(--accent); text-align: center; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2500; display: none; }
+
+        /* الصفحة التفصيلية للترجمة والمعجم */
+        .details-page { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .details-content { padding: 20px; overflow-y: auto; flex: 1; }
+        .details-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 14px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .details-main-row { text-align: center; margin-bottom: 20px; }
+        .details-word { font-size: 26px; font-weight: bold; color: var(--accent); }
+        .details-trans { font-size: 20px; margin-top: 5px; font-weight: bold; }
+        .details-grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .info-pill { background: var(--card-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; text-align: center; }
+        .info-pill span { display: block; font-weight: bold; color: var(--accent); margin-top: 3px; }
+        .details-divider { height: 1px; background: var(--border); margin: 15px 0; }
+        .section-box { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 15px; line-height: 1.6; }
+        .section-box h5 { margin: 0 0 8px 0; font-size: 14px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+
+        /* لوحات تحكم الإدارة والأعضاء */
+        .form-card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid var(--border); }
+        .form-group { margin-bottom: 12px; text-align: right; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text-main); border-radius: 6px; box-sizing: border-box; outline: none; }
+        .submit-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        .badge-role { display: inline-block; background: var(--accent); color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; margin-bottom: 15px; }
+
+        /* شريط التنقل السفلي الثابت */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); height: 65px; display: flex; justify-content: space-around; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 1000; border-top: 1px solid var(--border); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-sub); text-decoration: none; font-size: 12px; cursor: pointer; width: 33.33%; }
+        .nav-item.active { color: var(--accent); font-weight: bold; }
+        .nav-item i { font-size: 18px; margin-bottom: 4px; }
+        
+        /* صفحة من نحن واتصل بنا */
+        .static-page-card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center; line-height: 1.8; }
+    </style>
+</head>
+<body>
+
+    <!-- الهيدر العلوي -->
+    <div class="app-header">
+        <div class="header-side-btn" id="headerBackBtn" onclick="goBack()"><i class="fas fa-arrow-right" style="display:none;"></i></div>
+        <div id="headerTitle" style="font-weight: bold;">الرئيسية</div>
+        <div class="header-side-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+    </div>
+
+    <!-- شريط الإعلان السحابي المتحرك -->
+    <div class="ticker-wrap" id="tickerWrap" style="display:none;">
+        <div class="ticker" id="tickerText">جاري تحميل التنويهات...</div>
+    </div>
+
+    <!-- القائمة الجانبية المنسدلة Sidebar -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>القائمة</h3>
+            <i class="fas fa-times" style="cursor:pointer; font-size: 20px;" onclick="toggleSidebar()"></i>
+        </div>
+        <div class="sidebar-menu-item" onclick="switchTab('home'); toggleSidebar();"><i class="fas fa-home"></i>الرئيسية</div>
+        <div class="sidebar-menu-item" onclick="setGlobalSearch('search'); toggleSidebar();"><i class="fas fa-search"></i>البحث الشامل</div>
+        <div class="sidebar-menu-item" onclick="setGlobalSearch('dictionary'); toggleSidebar();"><i class="fas fa-book"></i>المعجم المصطلحي</div>
+        <div class="sidebar-menu-item" onclick="setGlobalSearch('lessons'); toggleSidebar();"><i class="fas fa-graduation-cap"></i>الدروس والقواعد</div>
+        <div class="sidebar-menu-item" onclick="switchTab('about'); toggleSidebar();"><i class="fas fa-info-circle"></i>من نحن</div>
+        <div class="sidebar-menu-item" onclick="switchTab('contact'); toggleSidebar();"><i class="fas fa-envelope"></i>اتصل بنا</div>
+        <div class="sidebar-menu-item" onclick="switchTab('login'); toggleSidebar();"><i class="fas fa-user-shield"></i>لوحة التحكم والإدارة</div>
+        <div class="sidebar-menu-item" onclick="toggleDarkMode()"><i class="fas fa-moon"></i>الوضع الليلي / النهار</div>
+    </div>
+
+    <!-- محتوى التطبيق الرئيسي -->
+    <div class="container">
+        
+        <!-- صفحة 1: الشاشة الرئيسية بالأقسام وشبكة الـ Grid ومربع البحث والوصف -->
+        <div id="pageHome" class="app-page active">
+            <div class="search-wrapper">
+                <input type="text" id="mainSearchInput" placeholder="ابحث عن أي مصطلح أو درس..." oninput="triggerGlobalSearch()">
+            </div>
+            <div class="grid-container" id="mainCategoriesGrid">جاري تحميل الأقسام السحابية...</div>
+            <div class="about-box" id="aboutTextMain">جاري تحميل وصف التطبيق...</div>
+        </div>
+
+        <!-- صفحة 2: استعراض المحتويات الداخلية للأقسام (فرعية أو كلمات أو دروس) -->
+        <div id="pageSub" class="app-page">
+            <div class="search-wrapper" id="subSearchWrapper">
+                <input type="text" id="subSearchInput" placeholder="تصفية المحتوى داخل هذا القسم..." oninput="filterSubContent()">
+            </div>
+            <div id="subContentArea"></div>
+        </div>
+
+        <!-- صفحة 3: تسجيل الدخول الآمن لنظام الصلاحيات -->
+        <div id="pageLogin" class="app-page">
+            <div class="form-card" id="loginFormCard">
+                <h3>تسجيل دخول الأعضاء والإدارة</h3>
+                <div class="form-group"><label>اسم المستخدم</label><input type="text" id="loginUser"></div>
+                <div class="form-group"><label>الرقم السري</label><input type="password" id="loginPass"></div>
+                <button class="submit-btn" onclick="handleLogin()">دخول</button>
+            </div>
+
+            <!-- لوحة تحكم النظام بعد الدخول السليم -->
+            <div id="controlPanel" style="display:none;">
+                <div style="text-align:center;"><span class="badge-role" id="userRoleBadge">الصلاحية: مدير</span></div>
+                
+                <!-- صلاحية المدير فقط: إضافة أقسام وتعديل نصوص واجهة -->
+                <div id="adminOnlyFields" style="display:none;">
+                    <div class="form-card">
+                        <h3>إضافة قسم جديد (كبير أو فرعي)</h3>
+                        <div class="form-group"><label>اسم القسم</label><input type="text" id="newCatTitle"></div>
+                        <div class="form-group"><label>رابط الصورة</label><input type="text" id="newCatImg"></div>
+                        <div class="form-group"><label>تابع لقسم فرعي؟</label><select id="newCatParent"><option value="">قسم رئيسي كبير</option></select></div>
+                        <div class="form-group"><label>نوع المحتوى الداخلي للقسم</label>
+                            <select id="newCatType">
+                                <option value="sub">يحتوي أقسام فرعية بالداخل</option>
+                                <option value="dictionary">يحتوي كلمات ومعجم وترجمة</option>
+                                <option value="lessons">يحتوي دروس وقواعد شروحات</option>
+                                <option value="text_image">يحتوي مادة نصية وصورة مباشرة</option>
+                            </select>
+                        </div>
+                        <button class="submit-btn" onclick="submitCategory()">حفظ ونشر القسم</button>
+                    </div>
+
+                    <div class="form-card">
+                        <h3>تحديث نصوص التطبيق والإعلانات</h3>
+                        <div class="form-group"><label>نص "من نحن" والوصف الأسفل</label><textarea id="setAboutText" rows="3"></textarea></div>
+                        <div class="form-group"><label>نص الشريط الإعلاني المتحرك</label><input type="text" id="setAnnounceText"></div>
+                        <button class="submit-btn" onclick="submitSettings()">تحديث الإعدادات العامة</button>
+                    </div>
+                </div>
+
+                <!-- صلاحية مشتركة (المدير + الأعضاء المساهمين): إضافة محتوى وترجمات ودروس -->
+                <div class="form-card">
+                    <h3>إضافة محتوى جديد (ترجمات أو دروس)</h3>
+                    <div class="form-group"><label>اختر القسم التابع له</label><select id="contentCatSelect"></select></div>
+                    <div class="form-group"><label>نوع المادة</label>
+                        <select id="contentTypeSelect" onchange="adjustFormFields()">
+                            <option value="word">مصطلح وقاموس معجمي</option>
+                            <option value="lesson">درس وقواعد تعليمية</option>
+                            <option value="article">مقال ونص وصورة مباشرة</option>
+                        </select>
+                    </div>
+                    <div id="formWordFields">
+                        <div class="form-group"><label>الكلمة (English)</label><input type="text" id="fWord"></div>
+                        <div class="form-group"><label>الترجمة (العربية)</label><input type="text" id="fTrans"></div>
+                        <div class="form-group"><label>المفرد (Singular)</label><input type="text" id="fSing"></div>
+                        <div class="form-group"><label>الجمع (Plural)</label><input type="text" id="fPlur"></div>
+                        <div class="form-group"><label>حالة وموقع الكلمة (اسم / فعل / صفة)</label><input type="text" id="fState"></div>
+                    </div>
+                    <div class="form-group"><label>الجملة والمثال التوضيحي</label><textarea id="fExample" rows="2"></textarea></div>
+                    <div class="form-group"><label>رابط الصورة المرفقة</label><input type="text" id="fImg"></div>
+                    <div class="form-group"><label>النص الإضافي الشامل والتنسيق</label><textarea id="fAdditional" rows="4" placeholder="اكتب هنا الشروحات الإضافية..."></textarea></div>
+                    <button class="submit-btn" onclick="submitContent()">نشر وحفظ المادة بالمخزن</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة 4: من نحن (ثابتة) -->
+        <div id="pageAbout" class="app-page">
+            <div class="static-page-card">
+                <h3>من نحن</h3>
+                <p id="aboutPageTextContainer">نحن منصة تعليمية متطورة تهدف لتبسيط المفاهيم والمصطلحات واللغات وتوفير مرجع متكامل للدارسين والمحبين للمعرفة.</p>
+            </div>
+        </div>
+
+        <!-- صفحة 5: اتصل بنا (ثابتة) -->
+        <div id="pageContact" class="app-page">
+            <div class="static-page-card">
+                <h3>اتصل بنا</h3>
+                <p>يسعدنا تواصلكم واستفساراتكم ومقترحاتكم لتطوير العمل دائماً.</p>
+                <div style="margin-top:20px; font-size: 18px; color: var(--accent);">
+                    <p><i class="fas fa-envelope"></i> support@mydomain.com</p>
+                    <p><i class="fab fa-whatsapp"></i> +123456789</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- الصفحة المنبثقة المستقلة لعرض التفاصيل الكاملة للمصطلح -->
+    <div class="details-page" id="detailsPagePopup">
+        <div class="app-header">
+            <div class="header-side-btn" onclick="closeDetailsPage()"><i class="fas fa-arrow-right"></i></div>
+            <div style="font-weight:bold;">تفاصيل المصطلح المعجمي</div>
+            <div class="header-side-btn"></div>
+        </div>
+        <div class="details-content">
+            <img src="" id="dPopupImg" class="details-img" style="display:none;">
+            <div class="details-main-row">
+                <div class="details-word" id="dPopupWord">Word</div>
+                <div class="details-trans" id="dPopupTrans">الترجمة العربية</div>
+            </div>
+            
+            <!-- شبكة المعلومات المنسقة للمفرد والجمع والحالة -->
+            <div class="details-grid-info" id="dPopupGridInfo">
+                <div class="info-pill">المفرد: <span id="dPopupSing">-</span></div>
+                <div class="info-pill">الجمع: <span id="dPopupPlur">-</span></div>
+                <div class="info-pill" style="grid-column: 1/3;">حالة الكلمة وقواعدها: <span id="dPopupState">-</span></div>
+            </div>
+
+            <div class="details-divider"></div>
+            
+            <div class="section-box" id="dPopupExBox">
+                <h5>جملة ومثال توضيحي (Example):</h5>
+                <p id="dPopupExText" style="direction: ltr; text-align: left;"></p>
+            </div>
+            
+            <div class="section-box" id="dPopupAddBox">
+                <h5>شروحات وملاحظات إضافية:</h5>
+                <p id="dPopupAddText" style="white-space: pre-line;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي الثابت للـ 3 أيقونات الأساسية -->
+    <div class="bottom-nav">
+        <div class="nav-item active" id="navHomeBtn" onclick="switchTab('home')"><i class="fas fa-search"></i><span>البحث</span></div>
+        <div class="nav-item" onclick="setGlobalSearch('dictionary')"><i class="fas fa-book"></i><span>المعجم</span></div>
+        <div class="nav-item" onclick="setGlobalSearch('lessons')"><i class="fas fa-graduation-cap"></i><span>الدروس</span></div>
+    </div>
+
+    <script>
+        // ⚠️ ضَع رابط الـ Web App URL الخاص بك المستخرج من الـ Apps Script هنا بين علامتي الاقتباس
+        const scriptURL = "https://script.google.com/macros/s/AKfycbzMHOqe7ce2Lu89DC4Z8S74YJeyQybN-yTJSd-fbdRdGnJdxzku5-buhn1O56XiYnVZsw/exec";
+
+        let dbCategories = [];
+        let dbContent = [];
+        let navigationHistory = [];
+        let currentCategoryContext = null;
+        let currentUserRole = null;
+
+        window.onload = function() {
+            loadCloudData();
+        };
+
+        function loadCloudData() {
+            fetch(scriptURL + "?action=loadAll")
+            .then(res => res.json())
+            .then(data => {
+                dbCategories = data.categories;
+                dbContent = data.content;
+                
+                // معالجة الإعدادات السحابية
+                let about = data.settings.find(s => s.key === "about_text");
+                let announce = data.settings.find(s => s.key === "announcement");
+                
+                if(about) {
+                    document.getElementById("aboutTextMain").innerText = about.value;
+                    document.getElementById("setAboutText").value = about.value;
+                }
+                if(announce && announce.value.trim() !== "") {
+                    document.getElementById("tickerWrap").style.display = "block";
+                    document.getElementById("tickerText").innerText = announce.value;
+                    document.getElementById("setAnnounceText").value = announce.value;
+                } else {
+                    document.getElementById("tickerWrap").style.display = "none";
+                }
+
+                renderMainGrid(dbCategories.filter(c => !c.parentId));
+                buildAdminDropdowns();
+            }).catch(err => {
+                document.getElementById("mainCategoriesGrid").innerText = "فشل الاتصال بقاعدة البيانات السحابية.";
+            });
+        }
+
+        function renderMainGrid(categories) {
+            let grid = document.getElementById("mainCategoriesGrid");
+            grid.innerHTML = "";
+            if(categories.length === 0) {
+                grid.innerHTML = "<p style='grid-column:1/3; text-align:center; color:var(--text-sub);'>لا توجد أقسام عامة حالياً.</p>";
+                return;
+            }
+            categories.forEach(cat => {
+                let imgHtml = cat.image ? `<img src="${cat.image}">` : `<img src="https://via.placeholder.com/150/2c3e50/ffffff?text=${cat.title}">`;
+                grid.innerHTML += `
+                    <div class="cat-card" onclick="handleCategoryClick('${cat.id}', '${cat.title}', '${cat.contentType}')">
+                        ${imgHtml}
+                        <h3>${cat.title}</h3>
+                    </div>`;
+            });
+        }
+
+        function handleCategoryClick(id, title, type) {
+            navigationHistory.push({view: currentCategoryContext ? 'sub' : 'home', id: currentCategoryContext?.id, title: currentCategoryContext?.title});
+            currentCategoryContext = { id: id, title: title, type: type };
+            
+            document.getElementById("headerBackBtn").querySelector("i").style.display = "block";
+            document.getElementById("headerTitle").innerText = title;
+            switchTab('sub');
+            buildSubPageContent();
+        }
+
+        function buildSubPageContent() {
+            let area = document.getElementById("subContentArea");
+            area.innerHTML = "";
+            document.getElementById("subSearchWrapper").style.display = "block";
+
+            if (currentCategoryContext.type === "sub") {
+                let subCats = dbCategories.filter(c => String(c.parentId) === String(currentCategoryContext.id));
+                area.className = "grid-container";
+                if(subCats.length === 0) { area.innerHTML = "<p style='grid-column:1/3; text-align:center;'>لا توجد أقسام فرعية داخلية مضافة.</p>"; return; }
+                subCats.forEach(cat => {
+                    let imgHtml = cat.image ? `<img src="${cat.image}">` : `<img src="https://via.placeholder.com/150/e67e22/ffffff?text=${cat.title}">`;
+                    area.innerHTML += `
+                        <div class="cat-card" onclick="handleCategoryClick('${cat.id}', '${cat.title}', '${cat.contentType}')">
+                            ${imgHtml}
+                            <h3>${cat.title}</h3>
+                        </div>`;
+                });
+            } else {
+                area.className = "";
+                let items = dbContent.filter(c => String(c.catId) === String(currentCategoryContext.id));
+                if(items.length === 0) { area.innerHTML = "<p style='text-align:center; color:var(--text-sub);'>هذا القسم لا يحتوي على مواد حالياً.</p>"; return; }
+                
+                items.forEach(item => {
+                    if (currentCategoryContext.type === "dictionary") {
+                        area.innerHTML += `
+                            <div class="item-list-card" onclick="openDetailsPage(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                                <div><h4>${item.word}</h4><p>${item.translation}</p></div>
+                                <i class="fas fa-chevron-left" style="color:var(--text-sub);"></i>
+                            </div>`;
+                    } else {
+                        // شروحات مقالات أو دروس مباشرة تفصيلية وسلسة
+                        let imgTag = item.image ? `<img src="${item.image}" style="width:100%; max-height:150px; object-fit:cover; border-radius:8px; margin-bottom:10px;">` : '';
+                        area.innerHTML += `
+                            <div class="form-card" onclick="incrementViewCount('${item.id}')">
+                                ${imgTag}
+                                <h3 style="margin-top:0; color:var(--accent);">${item.word || item.translation}</h3>
+                                <p style="white-space: pre-line;">${item.additionalText || item.example}</p>
+                                <small style="color:var(--text-sub); display:block; margin-top:8px;"><i class="fas fa-eye"></i> المشاهدات: ${item.views || 0}</small>
+                            </div>`;
+                    }
+                });
+            }
+        }
+
+        function filterSubContent() {
+            let q = document.getElementById("subSearchInput").value.toLowerCase().trim();
+            if(currentCategoryContext.type === "sub") {
+                let subCats = dbCategories.filter(c => String(c.parentId) === String(currentCategoryContext.id));
+                let filtered = subCats.filter(c => c.title.toLowerCase().includes(q));
+                renderSubGridOnly(filtered);
+            } else {
+                let items = dbContent.filter(c => String(c.catId) === String(currentCategoryContext.id));
+                let filtered = items.filter(i => i.word.toLowerCase().includes(q) || i.translation.toLowerCase().includes(q));
+                renderSubListOnly(filtered);
+            }
+        }
+
+        function renderSubGridOnly(cats) {
+            let area = document.getElementById("subContentArea"); area.innerHTML = "";
+            cats.forEach(cat => {
+                let imgHtml = cat.image ? `<img src="${cat.image}">` : `<img src="https://via.placeholder.com/150">`;
+                area.innerHTML += `<div class="cat-card" onclick="handleCategoryClick('${cat.id}', '${cat.title}', '${cat.contentType}')">${imgHtml}<h3>${cat.title}</h3></div>`;
+            });
+        }
+
+        function renderSubListOnly(items) {
+            let area = document.getElementById("subContentArea"); area.innerHTML = "";
+            items.forEach(item => {
+                area.innerHTML += `<div class="item-list-card" onclick="openDetailsPage(${JSON.stringify(item).replace(/"/g, '&quot;')})"><div><h4>${item.word}</h4><p>${item.translation}</p></div><i class="fas fa-chevron-left"></i></div>`;
+            });
+        }
+
+        function openDetailsPage(item) {
+            incrementViewCount(item.id);
+            document.getElementById("dPopupWord").innerText = item.word;
+            document.getElementById("dPopupTrans").innerText = item.translation;
+            
+            if(item.image) {
+                document.getElementById("dPopupImg").src = item.image;
+                document.getElementById("dPopupImg").style.display = "block";
+            } else { document.getElementById("dPopupImg").style.display = "none"; }
+
+            document.getElementById("dPopupSing").innerText = item.singular || '-';
+            document.getElementById("dPopupPlur").innerText = item.plural || '-';
+            document.getElementById("dPopupState").innerText = item.wordState || '-';
+
+            if(item.example) {
+                document.getElementById("dPopupExText").innerText = item.example;
+                document.getElementById("dPopupExBox").style.display = "block";
+            } else { document.getElementById("dPopupExBox").style.display = "none"; }
+
+            if(item.additionalText) {
+                document.getElementById("dPopupAddText").innerText = item.additionalText;
+                document.getElementById("dPopupAddBox").style.display = "block";
+            } else { document.getElementById("dPopupAddBox").style.display = "none"; }
+
+            document.getElementById("detailsPagePopup").style.display = "flex";
+        }
+
+        function closeDetailsPage() { document.getElementById("detailsPagePopup").style.display = "none"; }
+
+        function triggerGlobalSearch() {
+            let q = document.getElementById("mainSearchInput").value.toLowerCase().trim();
+            if(!q) { renderMainGrid(dbCategories.filter(c => !c.parentId)); return; }
+            
+            let area = document.getElementById("mainCategoriesGrid");
+            area.innerHTML = "";
+            let filteredItems = dbContent.filter(i => i.word.toLowerCase().includes(q) || i.translation.toLowerCase().includes(q));
+            if(filteredItems.length === 0) { area.innerHTML = "<p style='grid-column:1/3; text-align:center;'>لا توجد نتائج مطابقة للبحث الشامل.</p>"; return; }
+            
+            filteredItems.forEach(item => {
+                area.innerHTML += `
+                    <div class="item-list-card" style="grid-column:1/3;" onclick="openDetailsPage(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                        <div><h4>${item.word}</h4><p>${item.translation} (${item.type === 'word' ? 'معجم' : 'درس'})</p></div>
+                        <i class="fas fa-chevron-left"></i>
+                    </div>`;
+            });
+        }
+
+        function setGlobalSearch(type) {
+            switchTab('home');
+            let foundCat = dbCategories.find(c => c.contentType === type);
+            if(foundCat) {
+                handleCategoryClick(foundCat.id, foundCat.title, foundCat.contentType);
+            } else {
+                alert("لم يتم إنشاء أوعية أقسام مخصصة لهذا النوع السحابي بعد من لوحة التحكم.");
+            }
+        }
+
+        function goBack() {
+            if(navigationHistory.length > 0) {
+                let prev = navigationHistory.pop();
+                currentCategoryContext = prev.id ? { id: prev.id, title: prev.title, type: dbCategories.find(c => String(c.id) === String(prev.id))?.contentType } : null;
+                if(!currentCategoryContext) {
+                    document.getElementById("headerBackBtn").querySelector("i").style.display = "none";
+                    document.getElementById("headerTitle").innerText = "الرئيسية";
+                    switchTab('home');
+                    renderMainGrid(dbCategories.filter(c => !c.parentId));
+                } else {
+                    document.getElementById("headerTitle").innerText = currentCategoryContext.title;
+                    buildSubPageContent();
+                }
+            } else {
+                document.getElementById("headerBackBtn").querySelector("i").style.display = "none";
+                switchTab('home');
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            let page = document.getElementById('page' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+            if(page) page.classList.add('active');
+
+            if(tabId === 'home') {
+                document.getElementById("navHomeBtn").classList.add('active');
+                document.getElementById("headerTitle").innerText = "الرئيسية";
+                document.getElementById("headerBackBtn").querySelector("i").style.display = "none";
+                navigationHistory = []; currentCategoryContext = null;
+            } else if (tabId === 'login') {
+                document.getElementById("headerTitle").innerText = "لوحة التحكم";
+            } else if (tabId === 'about') { document.getElementById("headerTitle").innerText = "من نحن"; }
+            else if (tabId === 'contact') { document.getElementById("headerTitle").innerText = "اتصل بنا"; }
+        }
+
+        function toggleSidebar() {
+            let sb = document.getElementById("sidebar");
+            let ov = document.getElementById("overlay");
+            if(sb.classList.contains("open")) { sb.classList.remove("open"); ov.style.display = "none"; } 
+            else { sb.classList.add("open"); ov.style.display = "block"; }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        function handleLogin() {
+            let u = document.getElementById("loginUser").value.trim();
+            let p = document.getElementById("loginPass").value.trim();
+            if(!u || !p) return alert("يرجى ملء البيانات");
+
+            fetch(`${scriptURL}?action=login&user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`)
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === "success") {
+                    currentUserRole = res.role;
+                    document.getElementById("loginFormCard").style.display = "none";
+                    document.getElementById("controlPanel").style.display = "block";
+                    document.getElementById("userRoleBadge").innerText = currentUserRole === "admin" ? "الصلاحية: مدير عام" : "الصلاحية: عضو مساهم";
+                    
+                    if(currentUserRole === "admin") {
+                        document.getElementById("adminOnlyFields").style.display = "block";
+                    } else {
+                        document.getElementById("adminOnlyFields").style.display = "none";
+                    }
+                } else { alert("اسم المستخدم أو الرقم السري خاطئ!"); }
+            });
+        }
+
+        function buildAdminDropdowns() {
+            let pSelect = document.getElementById("newCatParent");
+            let cSelect = document.getElementById("contentCatSelect");
+            
+            pSelect.innerHTML = '<option value="">قسم رئيسي كبير</option>';
+            cSelect.innerHTML = '';
+
+            dbCategories.forEach(c => {
+                if(c.contentType === "sub") { pSelect.innerHTML += `<option value="${c.id}">${c.title}</option>`; }
+                cSelect.innerHTML += `<option value="${c.id}">${c.title} (${c.contentType})</option>`;
+            });
+        }
+
+        function adjustFormFields() {
+            let type = document.getElementById("contentTypeSelect").value;
+            document.getElementById("formWordFields").style.display = (type === "word") ? "block" : "none";
+        }
+
+        function submitCategory() {
+            let title = document.getElementById("newCatTitle").value.trim();
+            let img = document.getElementById("newCatImg").value.trim();
+            let parent = document.getElementById("newCatParent").value;
+            let type = document.getElementById("newCatType").value;
+
+            if(!title) return alert("أدخل عنوان القسم");
+
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify({ action: "addCategory", title: title, image: img, parentId: parent, contentType: type })
+            }).then(res => res.json()).then(res => {
+                if(res.status === "success") { alert("تم نشر وحفظ القسم الجديد سحابياً!"); loadCloudData(); }
+            });
+        }
+
+        function submitContent() {
+            let catId = document.getElementById("contentCatSelect").value;
+            let type = document.getElementById("contentTypeSelect").value;
+            let word = document.getElementById("fWord").value.trim();
+            let trans = document.getElementById("fTrans").value.trim();
+            let sing = document.getElementById("fSing").value.trim();
+            let plur = document.getElementById("fPlur").value.trim();
+            let state = document.getElementById("fState").value.trim();
+            let ex = document.getElementById("fExample").value.trim();
+            let img = document.getElementById("fImg").value.trim();
+            let add = document.getElementById("fAdditional").value.trim();
+
+            if(!catId || !trans) return alert("الرجاء تحديد القسم والترجمة على الأقل");
+
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify({ action: "addContent", catId: catId, type: type, word: word, translation: trans, singular: sing, plural: plur, wordState: state, example: ex, image: img, additionalText: add })
+            }).then(res => res.json()).then(res => {
+                if(res.status === "success") { alert("تم حفظ ونشر المادة الإضافية بنجاح!"); loadCloudData(); }
+            });
+        }
+
+        function submitSettings() {
+            let ab = document.getElementById("setAboutText").value.trim();
+            let an = document.getElementById("setAnnounceText").value.trim();
+
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify({ action: "updateSettings", aboutText: ab, announcement: an })
+            }).then(res => res.json()).then(res => {
+                if(res.status === "success") { alert("تم تحديث الإعدادات بنجاح!"); loadCloudData(); }
+            });
+        }
+
+        function incrementViewCount(id) {
+            fetch(scriptURL, { method: "POST", body: JSON.stringify({ action: "incrementView", id: id }) });
+        }
+    </script>
+</body>
+</html>
