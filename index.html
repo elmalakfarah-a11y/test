@@ -159,7 +159,14 @@
                         <h3>إضافة قسم جديد (كبير أو فرعي)</h3>
                         <div class="form-group"><label>اسم القسم</label><input type="text" id="newCatTitle"></div>
                         <div class="form-group"><label>رابط الصورة</label><input type="text" id="newCatImg"></div>
-                        <div class="form-group"><label>تابع لقسم فرعي؟</label><select id="newCatParent"><option value="">قسم رئيسي كبير</option></select></div>
+                        
+                        <div class="form-group">
+                            <label>تحديد مسار القسم (اختر بالتتابع، أو اتركه فارغاً لجعله قسماً رئيسياً):</label>
+                            <div id="adminNewCatContainer" style="display: flex; flex-direction: column; gap: 8px;">
+                                </div>
+                            <input type="hidden" id="newCatParentId" value="">
+                        </div>
+
                         <div class="form-group"><label>نوع المحتوى الداخلي للقسم</label>
                             <select id="newCatType">
                                 <option value="sub">يحتوي أقسام فرعية بالداخل</option>
@@ -308,15 +315,17 @@
                 }
 
                 renderMainGrid(dbCategories.filter(c => !c.parentId));
-                populateParentCategorySelect(); // تعبئة قائمة أقسام إضافة قسم جديد
-                prepareAdminCategoryDropdowns(); // تهيئة القوائم الشجرية للمحتوى
+                
+                // تهيئة القوائم الشجرية للمحتوى ولإضافة الأقسام
+                prepareAdminCategoryDropdowns(); 
+                prepareAdminNewCatDropdowns();
             }).catch(err => {
                 document.getElementById("mainCategoriesGrid").innerText = "فشل الاتصال بقاعدة البيانات السحابية.";
             });
         }
 
         // ==========================================
-        // 1. نظام القوائم الشجرية الديناميكية (الحل الذكي)
+        // 1. نظام القوائم الشجرية الديناميكية لـ "إضافة محتوى جديد"
         // ==========================================
         function prepareAdminCategoryDropdowns() {
             const container = document.getElementById('adminCategoryContainer');
@@ -381,7 +390,76 @@
         }
 
         // ==========================================
-        // 2. دوال عرض البيانات والتنقل
+        // 2. نظام القوائم الشجرية الديناميكية لـ "إضافة قسم جديد"
+        // ==========================================
+        function prepareAdminNewCatDropdowns() {
+            const container = document.getElementById('adminNewCatContainer');
+            if (!container) return;
+            container.innerHTML = ''; 
+            document.getElementById('newCatParentId').value = ''; 
+            buildNextLevelNewCatDropdown("");
+        }
+
+        function buildNextLevelNewCatDropdown(parentId) {
+            if (!dbCategories) return;
+            
+            // فلترة الأقسام التي يمكن أن تحتوي على أقسام فرعية داخلها فقط (نوعها sub)
+            const childCategories = dbCategories.filter(cat => {
+                let isMatch = false;
+                if (parentId === "") {
+                    isMatch = !cat.parentId || cat.parentId === "null" || cat.parentId === "" || cat.parentId == 0;
+                } else {
+                    isMatch = cat.parentId == parentId;
+                }
+                return isMatch && cat.contentType === 'sub'; 
+            });
+
+            if (childCategories.length === 0) return; 
+
+            const container = document.getElementById('adminNewCatContainer');
+            const select = document.createElement('select');
+            select.className = 'dynamic-admin-cat';
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = parentId === "" ? '-- قسم رئيسي (بدون أب) --' : '-- اختر القسم الفرعي التالي --';
+            select.appendChild(defaultOption);
+
+            childCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id; 
+                option.textContent = cat.title; 
+                select.appendChild(option);
+            });
+
+            select.onchange = function() {
+                while (select.nextSibling) {
+                    container.removeChild(select.nextSibling);
+                }
+                const selectedId = select.value;
+                if (selectedId) {
+                    document.getElementById('newCatParentId').value = selectedId;
+                    buildNextLevelNewCatDropdown(selectedId);
+                } else {
+                    rollbackToPreviousNewCat(select);
+                }
+            };
+            container.appendChild(select);
+        }
+
+        function rollbackToPreviousNewCat(currentSelect) {
+            const container = document.getElementById('adminNewCatContainer');
+            const dropdowns = container.getElementsByClassName('dynamic-admin-cat');
+            let index = Array.prototype.indexOf.call(dropdowns, currentSelect);
+            if (index > 0) {
+                document.getElementById('newCatParentId').value = dropdowns[index - 1].value;
+            } else {
+                document.getElementById('newCatParentId').value = ''; 
+            }
+        }
+
+        // ==========================================
+        // 3. دوال عرض البيانات والتنقل
         // ==========================================
         function renderMainGrid(categories) {
             let grid = document.getElementById("mainCategoriesGrid");
@@ -556,7 +634,6 @@
             }
         }
 
-        // الدالة التي كانت مبتورة في طلبك وتم إصلاحها وتكملتها
         function switchTab(tabId) {
             document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -579,7 +656,7 @@
         }
 
         // ==========================================
-        // 3. دوال لوحة التحكم والتفاعل (تمت برمجتها لتتوافق مع Apps Script)
+        // 4. دوال لوحة التحكم والتفاعل (للتواصل مع Apps Script)
         // ==========================================
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -602,18 +679,6 @@
             }
         }
 
-        function populateParentCategorySelect() {
-            let select = document.getElementById("newCatParent");
-            if(!select) return;
-            select.innerHTML = '<option value="">قسم رئيسي كبير</option>';
-            dbCategories.forEach(cat => {
-                if(cat.contentType === 'sub') {
-                     select.innerHTML += `<option value="${cat.id}">${cat.title}</option>`;
-                }
-            });
-        }
-
-        // إرسال البيانات للـ Google Sheets 
         function submitContent() {
             let catId = document.getElementById('contentCatId').value;
             if(!catId) return alert("يرجى اختيار القسم الفرعي النهائي بشكل صحيح.");
@@ -643,7 +708,7 @@
                 action: "addCategory",
                 title: document.getElementById('newCatTitle').value,
                 image: document.getElementById('newCatImg').value,
-                parentId: document.getElementById('newCatParent').value,
+                parentId: document.getElementById('newCatParentId').value, // يستقبل الـ parentId من الحقل المخفي الجديد
                 contentType: document.getElementById('newCatType').value
             };
             fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) })
@@ -669,8 +734,6 @@
         }
 
         function handleLogin() {
-            // ملاحظة: يمكنك ربط هذه الدالة بسكريبت الجوجل شيت الفعلي، 
-            // لكن كمثال مبسط لتشغيل الواجهة للمدير سنقوم بعرضها مباشرة
             let user = document.getElementById("loginUser").value;
             let pass = document.getElementById("loginPass").value;
             
@@ -680,7 +743,10 @@
                 document.getElementById("controlPanel").style.display = "block";
                 document.getElementById("adminOnlyFields").style.display = "block";
                 document.getElementById("userRoleBadge").innerText = "الصلاحية: مدير عام";
-                prepareAdminCategoryDropdowns(); // تشغيل القوائم
+                
+                // تهيئة القوائم عند تسجيل الدخول
+                prepareAdminCategoryDropdowns(); 
+                prepareAdminNewCatDropdowns();
             } else {
                 alert("بيانات الدخول غير صحيحة!");
             }
