@@ -3,341 +3,540 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنصة التعليمية الشاملة</title>
+    <title>تطبيقي الاحترافي الشامل</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         /* المتغيرات والألوان العصرية */
         :root {
-            --bg: #f4f7f6;
-            --card-bg: #ffffff;
-            --accent: #4f46e5; /* لون نيلي عصري */
+            --primary: #1e293b;
+            --accent: #4f46e5; /* نيلي عصري */
             --accent-hover: #4338ca;
-            --text-main: #1e293b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
             --text-sub: #64748b;
             --border: #e2e8f0;
             --shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.025);
-            --radius: 20px;
+            --radius: 18px;
         }
 
-        /* الإعدادات الأساسية */
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            padding-top: 70px; /* مساحة للرأس الثابت */
-            padding-bottom: 80px; /* مساحة للشريط السفلي */
-            transition: background-color 0.3s, color 0.3s;
+        /* الوضع الليلي العصري */
+        .dark-mode {
+            --primary: #0f172a;
+            --accent: #6366f1;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border: #334155;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
         }
 
-        /* الهيدر (الشريط العلوي) */
-        .app-header {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 60px;
-            background: var(--card-bg);
-            display: flex;
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            padding: 0; 
+            color: var(--text-main); 
+            transition: background-color 0.3s, color 0.3s; 
+        }
+        
+        /* الهيدر العلوي */
+        .app-header { 
+            background: var(--card-bg); 
+            color: var(--text-main); 
+            padding: 15px 20px; 
+            text-align: center; 
+            font-size: 18px; 
+            font-weight: 800; 
+            position: relative; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            display: flex; 
+            justify-content: space-between; 
             align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--border);
             z-index: 1000;
         }
-        .header-btn {
-            background: none; border: none; font-size: 20px;
-            color: var(--text-main); cursor: pointer;
-        }
-        .header-title { font-weight: 700; font-size: 18px; }
+        .header-side-btn { color: var(--text-main); cursor: pointer; font-size: 20px; width: 30px; text-align: right; transition: 0.3s; }
+        .header-side-btn:hover { color: var(--accent); }
 
-        /* شريط الأخبار / التنويهات */
-        .ticker-wrap {
-            background: linear-gradient(90deg, #4f46e5, #3b82f6);
-            color: white; padding: 8px 15px; font-size: 14px;
-            text-align: center; font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        /* شريط الإعلان المتحرك */
+        .ticker-wrap { background: linear-gradient(90deg, var(--accent), #3b82f6); color: white; padding: 8px 0; overflow: hidden; font-size: 14px; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .ticker { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; padding-left: 100%; }
+        @keyframes marquee { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        /* الصفحات */
-        .app-page { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .container { max-width: 600px; margin: 15px auto; padding: 0 15px; margin-bottom: 90px; }
+        .app-page { display: none; animation: fadeIn 0.4s ease; }
         .app-page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* مربع البحث العصري */
+        /* البحث الخارق - تصميم عصري */
         .search-wrapper { margin-bottom: 25px; position: relative; }
-        .search-wrapper input {
-            width: 100%; padding: 14px 20px 14px 45px;
-            border: 2px solid transparent; border-radius: 30px;
-            background: var(--card-bg); box-shadow: var(--shadow);
-            font-family: 'Tajawal', sans-serif; font-size: 16px;
-            color: var(--text-main); outline: none; transition: 0.3s;
-            box-sizing: border-box;
+        .search-wrapper input { 
+            width: 100%; padding: 14px 20px; border: 2px solid transparent; 
+            border-radius: 30px; outline: none; font-size: 16px; 
+            font-family: 'Tajawal', sans-serif; font-weight: 500;
+            background: var(--card-bg); color: var(--text-main); 
+            box-sizing: border-box; text-align: center; 
+            box-shadow: var(--shadow); transition: 0.3s; 
         }
         .search-wrapper input:focus { border-color: var(--accent); }
-        .search-wrapper i {
-            position: absolute; left: 18px; top: 50%;
-            transform: translateY(-50%); color: var(--text-sub);
-        }
 
-        /* شبكة الأقسام (الكروت) */
-        .grid-container {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;
-        }
-        .cat-card {
-            background: var(--card-bg); border-radius: var(--radius);
-            overflow: hidden; box-shadow: var(--shadow); cursor: pointer;
-            transition: all 0.3s ease; border: 1px solid var(--border);
-            text-align: center; padding-bottom: 15px;
+        /* شبكة الأقسام (المربعات) */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .cat-card { 
+            background: var(--card-bg); border-radius: var(--radius); overflow: hidden; 
+            box-shadow: var(--shadow); cursor: pointer; text-align: center; 
+            transition: all 0.3s ease; border: 1px solid var(--border); padding-bottom: 5px;
         }
         .cat-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .cat-card img { width: 100%; height: 120px; object-fit: cover; }
-        .cat-card h3 { margin: 15px 10px 0; font-size: 16px; font-weight: 700; color: var(--accent); }
+        .cat-card:active { transform: scale(0.96); }
+        .cat-card img { width: 100%; height: 120px; object-fit: cover; background: var(--border); }
+        .cat-card h3 { margin: 15px 5px; font-size: 16px; font-weight: 700; color: var(--accent); }
 
-        /* قائمة المواد (اللستة) */
-        .item-list-card {
-            background: var(--card-bg); padding: 18px; border-radius: 16px;
-            margin-bottom: 15px; display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; box-shadow: var(--shadow);
-            border: 1px solid var(--border); border-right: 6px solid var(--accent);
-            transition: 0.3s;
+        /* القائمة اللستة للمواد والترجمات */
+        .item-list-card { 
+            background: var(--card-bg); padding: 18px; border-radius: 16px; 
+            margin-bottom: 15px; display: flex; justify-content: space-between; 
+            align-items: center; cursor: pointer; border: 1px solid var(--border); 
+            border-right: 6px solid var(--accent); box-shadow: var(--shadow); transition: 0.3s; 
         }
         .item-list-card:hover { transform: translateX(-5px); }
-        .item-list-card h4 { margin: 0; font-size: 18px; font-weight: 700; }
-        .item-list-card p { margin: 8px 0 0; color: var(--text-sub); font-size: 14px; }
+        .item-list-card h4 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main); }
+        .item-list-card p { margin: 8px 0 0 0; color: var(--text-sub); font-size: 14px; font-weight: 500; }
 
-        /* نافذة التفاصيل (Popup) */
-        .details-page {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px);
-            z-index: 2000; display: none; align-items: flex-end;
-        }
-        .details-content-wrap {
-            background: var(--bg); width: 100%; height: 85%;
-            border-radius: 30px 30px 0 0; display: flex; flex-direction: column;
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        /* النص التعريفي أسفل التطبيق */
+        .about-box { background: var(--card-bg); padding: 20px; border-radius: var(--radius); text-align: center; margin-top: 25px; border: 1px solid var(--border); color: var(--text-sub); font-size: 14px; line-height: 1.8; box-shadow: var(--shadow); }
+
+        /* القائمة الجانبية المنسدلة Sidebar */
+        .sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: var(--card-bg); z-index: 3000; box-shadow: -5px 0 20px rgba(0,0,0,0.1); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding: 20px; box-sizing: border-box; border-left: 1px solid var(--border); }
+        .sidebar.open { right: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
+        .sidebar-header h3 { margin: 0; color: var(--accent); font-weight: 800; }
+        .sidebar-menu-item { display: flex; align-items: center; padding: 14px; color: var(--text-main); text-decoration: none; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 12px; margin-bottom: 8px; transition: 0.3s; }
+        .sidebar-menu-item:hover { background: var(--bg); color: var(--accent); transform: translateX(-5px); }
+        .sidebar-menu-item i { margin-left: 15px; width: 20px; color: var(--accent); text-align: center; font-size: 18px; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(3px); z-index: 2500; display: none; }
+
+        /* الصفحة التفصيلية للترجمة والمعجم */
+        .details-page { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .details-header {
-            padding: 20px; text-align: center; border-bottom: 1px solid var(--border);
-            position: relative; background: var(--card-bg); border-radius: 30px 30px 0 0;
-        }
-        .close-btn {
-            position: absolute; left: 20px; top: 20px;
-            background: #f1f5f9; border: none; width: 35px; height: 35px;
-            border-radius: 50%; cursor: pointer; color: var(--text-sub);
-        }
-        .details-body { padding: 20px; overflow-y: auto; flex: 1; }
+        .details-content { padding: 25px 20px; overflow-y: auto; flex: 1; }
+        .details-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--shadow); border: none; }
         .details-main-row { text-align: center; margin-bottom: 25px; }
         .details-word { font-size: 32px; font-weight: 800; color: var(--accent); }
-        .details-trans { font-size: 22px; font-weight: 500; color: var(--text-main); margin-top: 5px; }
-        .info-pill {
-            background: var(--card-bg); padding: 12px; border-radius: 12px;
-            border: 1px solid var(--border); text-align: center; font-size: 14px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .info-pill span { display: block; font-weight: 800; color: var(--accent); margin-top: 5px; font-size: 16px;}
-        .details-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
-        .section-box { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .section-box h5 { margin: 0 0 10px 0; font-size: 15px; color: var(--text-sub); }
+        .details-trans { font-size: 22px; margin-top: 8px; font-weight: 700; color: var(--text-main); }
+        .details-grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .info-pill { background: var(--card-bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); font-size: 14px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .info-pill span { display: block; font-weight: 800; color: var(--accent); margin-top: 5px; font-size: 16px; }
+        .details-divider { height: 1px; background: var(--border); margin: 20px 0; }
+        .section-box { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; line-height: 1.8; box-shadow: var(--shadow); }
+        .section-box h5 { margin: 0 0 10px 0; font-size: 15px; color: var(--text-sub); border-bottom: 1px solid var(--bg); padding-bottom: 8px; }
 
-        /* النماذج (لوحة التحكم) */
-        .form-card {
-            background: var(--card-bg); padding: 25px; border-radius: var(--radius);
-            box-shadow: var(--shadow); margin-bottom: 20px; border: 1px solid var(--border);
-        }
-        .form-card h3 { margin-top: 0; color: var(--accent); border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
-        .form-group { margin-bottom: 15px; }
+        /* لوحات تحكم الإدارة والأعضاء */
+        .form-card { background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; border: 1px solid var(--border); }
+        .form-card h3 { margin-top: 0; color: var(--accent); border-bottom: 2px solid var(--bg); padding-bottom: 10px; font-weight: 800; }
+        .form-group { margin-bottom: 15px; text-align: right; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 14px; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 12px 15px; border: 2px solid var(--border);
-            background: var(--bg); color: var(--text-main); border-radius: 12px;
-            font-family: 'Tajawal', sans-serif; outline: none; transition: 0.3s; box-sizing: border-box;
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; padding: 12px 15px; border: 2px solid var(--border); 
+            background: var(--bg); color: var(--text-main); border-radius: 12px; 
+            box-sizing: border-box; outline: none; font-family: 'Tajawal', sans-serif; font-size: 15px; transition: 0.3s; 
         }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); background: var(--card-bg); }
-        .submit-btn {
-            width: 100%; background: linear-gradient(135deg, var(--accent), #3b82f6);
-            color: white; border: none; padding: 15px; border-radius: 12px;
-            font-size: 16px; font-weight: 800; font-family: 'Tajawal', sans-serif;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        .submit-btn { 
+            width: 100%; background: linear-gradient(135deg, var(--accent), #3b82f6); 
+            color: white; border: none; padding: 15px; border-radius: 12px; 
+            font-size: 16px; font-weight: 800; font-family: 'Tajawal', sans-serif; 
+            cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3); transition: 0.3s; 
         }
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4); }
+        .badge-role { display: inline-block; background: var(--accent); color: white; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 20px; }
 
-        /* الشريط السفلي */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--card-bg); height: 70px; display: flex;
-            justify-content: space-around; box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-            z-index: 1000; border-top: 1px solid var(--border); border-radius: 20px 20px 0 0;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; color: var(--text-sub); text-decoration: none;
-            font-size: 13px; font-weight: 500; cursor: pointer; flex: 1; transition: 0.3s;
-        }
-        .nav-item i { font-size: 20px; margin-bottom: 6px; transition: 0.3s; }
+        /* شريط التنقل السفلي الثابت */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); height: 70px; display: flex; justify-content: space-around; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 1000; border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-sub); text-decoration: none; font-size: 13px; font-weight: 700; cursor: pointer; width: 33.33%; transition: 0.3s; }
         .nav-item.active { color: var(--accent); }
+        .nav-item i { font-size: 20px; margin-bottom: 6px; transition: 0.3s; }
         .nav-item.active i { transform: translateY(-3px); }
         
-        /* رسائل التحميل */
-        .loading-text { text-align: center; padding: 40px; color: var(--text-sub); font-weight: 500; }
+        /* صفحة من نحن واتصل بنا */
+        .static-page-card { background: var(--card-bg); padding: 25px; border-radius: var(--radius); border: 1px solid var(--border); text-align: center; line-height: 1.8; box-shadow: var(--shadow); }
+        
+        /* تصميم القوائم المنسدلة الديناميكية */
+        .dynamic-admin-cat { width: 100%; padding: 12px 15px; border: 2px solid var(--border); background: var(--bg); color: var(--text-main); border-radius: 12px; outline: none; margin-bottom: 8px; font-family: 'Tajawal', sans-serif; font-size: 15px; transition: 0.3s; }
+        .dynamic-admin-cat:focus { border-color: var(--accent); background: var(--card-bg); }
     </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <button class="header-btn" id="headerBackBtn" onclick="goBack()" style="display:none;"><i class="fa-solid fa-arrow-right"></i></button>
-        <div class="header-title" id="headerTitle">الرئيسية</div>
-        <button class="header-btn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-    </header>
+    <div class="app-header">
+        <div class="header-side-btn" id="headerBackBtn" onclick="goBack()"><i class="fas fa-arrow-right" style="display:none;"></i></div>
+        <div id="headerTitle" style="font-weight: 800;">الرئيسية</div>
+        <div class="header-side-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+    </div>
 
     <div class="ticker-wrap" id="tickerWrap" style="display:none;">
-        <span id="tickerText"></span>
+        <div class="ticker" id="tickerText">جاري تحميل التنويهات...</div>
     </div>
 
-    <div id="pageHome" class="app-page active">
-        <div class="search-wrapper">
-            <input type="text" id="mainSearchInput" placeholder="ابحث في جميع المواد..." onkeyup="triggerGlobalSearch()">
-            <i class="fa-solid fa-search"></i>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>القائمة</h3>
+            <i class="fas fa-times" style="cursor:pointer; font-size: 20px; color: var(--text-sub);" onclick="toggleSidebar()"></i>
         </div>
-        <div id="mainCategoriesGrid" class="grid-container">
-            <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل البيانات السحابية...</div>
-        </div>
+        <div class="sidebar-menu-item" onclick="switchTab('home'); toggleSidebar();"><i class="fas fa-home"></i>الرئيسية</div>
+        <div class="sidebar-menu-item" onclick="document.getElementById('mainSearchInput').focus(); switchTab('home'); toggleSidebar();"><i class="fas fa-search"></i>البحث الشامل</div>
+        <div class="sidebar-menu-item" onclick="setGlobalSearch('dictionary'); toggleSidebar();"><i class="fas fa-book"></i>المعجم المصطلحي</div>
+        <div class="sidebar-menu-item" onclick="setGlobalSearch('lessons'); toggleSidebar();"><i class="fas fa-graduation-cap"></i>الدروس والقواعد</div>
+        <div class="sidebar-menu-item" onclick="switchTab('about'); toggleSidebar();"><i class="fas fa-info-circle"></i>من نحن</div>
+        <div class="sidebar-menu-item" onclick="switchTab('contact'); toggleSidebar();"><i class="fas fa-envelope"></i>اتصل بنا</div>
+        <div class="sidebar-menu-item" onclick="switchTab('login'); toggleSidebar();"><i class="fas fa-user-shield"></i>لوحة التحكم والإدارة</div>
+        <div class="sidebar-menu-item" onclick="toggleDarkMode()"><i class="fas fa-moon"></i>الوضع الليلي / النهار</div>
     </div>
 
-    <div id="pageSub" class="app-page">
-        <div class="search-wrapper" id="subSearchWrapper">
-            <input type="text" id="subSearchInput" placeholder="بحث داخل القسم..." onkeyup="filterSubContent()">
-            <i class="fa-solid fa-search"></i>
-        </div>
-        <div id="subContentArea"></div>
-    </div>
-
-    <div id="pageLogin" class="app-page">
-        <div class="form-card" id="loginCard">
-            <h3>تسجيل دخول الإدارة</h3>
-            <div class="form-group">
-                <label>اسم المستخدم</label>
-                <input type="text" id="loginUser">
+    <div class="container">
+        
+        <div id="pageHome" class="app-page active">
+            <div class="search-wrapper">
+                <input type="text" id="mainSearchInput" placeholder="ابحث عن أي مصطلح أو درس..." oninput="triggerGlobalSearch()">
             </div>
-            <div class="form-group">
-                <label>كلمة المرور</label>
-                <input type="password" id="loginPass">
+            <div class="grid-container" id="mainCategoriesGrid">
+                <p style='grid-column:1/3; text-align:center; color:var(--text-sub);'><i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات السحابية...</p>
             </div>
-            <button class="submit-btn" onclick="handleLogin()">دخول</button>
+            <div class="about-box" id="aboutTextMain">جاري تحميل وصف التطبيق...</div>
         </div>
 
-        <div id="adminPanel" style="display: none;">
-            <div class="form-card">
-                <h3><i class="fa-solid fa-folder-plus"></i> إضافة قسم جديد</h3>
-                <div class="form-group">
-                    <label>اسم القسم</label>
-                    <input type="text" id="newCatTitle">
-                </div>
-                <div id="newCatParentContainer"></div>
-                <input type="hidden" id="newCatParentId">
+        <div id="pageSub" class="app-page">
+            <div class="search-wrapper" id="subSearchWrapper">
+                <input type="text" id="subSearchInput" placeholder="تصفية المحتوى داخل هذا القسم..." oninput="filterSubContent()">
+            </div>
+            <div id="subContentArea"></div>
+        </div>
 
-                <div class="form-group">
-                    <label>نوع القسم (داخلي)</label>
-                    <select id="newCatType">
-                        <option value="sub">حاضنة (تحتوي على أقسام فرعية)</option>
-                        <option value="dictionary">معجم (يحتوي على كلمات)</option>
-                        <option value="lesson">دروس (يحتوي على شروحات)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>رابط الصورة (اختياري)</label>
-                    <input type="text" id="newCatImg">
-                </div>
-                <button class="submit-btn" onclick="submitCategory()">حفظ القسم</button>
+        <div id="pageLogin" class="app-page">
+            <div class="form-card" id="loginFormCard">
+                <h3>تسجيل دخول الأعضاء والإدارة</h3>
+                <div class="form-group"><label>اسم المستخدم</label><input type="text" id="loginUser"></div>
+                <div class="form-group"><label>الرقم السري</label><input type="password" id="loginPass"></div>
+                <button class="submit-btn" onclick="handleLogin()">دخول</button>
             </div>
 
-            <div class="form-card">
-                <h3><i class="fa-solid fa-file-circle-plus"></i> إضافة محتوى جديد</h3>
-                <div id="contentCatContainer"></div>
-                <input type="hidden" id="contentCatId">
+            <div id="controlPanel" style="display:none;">
+                <div style="text-align:center;"><span class="badge-role" id="userRoleBadge">الصلاحية: مدير</span></div>
                 
-                <div class="form-group">
-                    <label>الكلمة / العنوان</label>
-                    <input type="text" id="cWord">
+                <div id="adminOnlyFields" style="display:none;">
+                    <div class="form-card">
+                        <h3>إضافة قسم جديد (كبير أو فرعي)</h3>
+                        <div class="form-group"><label>اسم القسم</label><input type="text" id="newCatTitle"></div>
+                        <div class="form-group"><label>رابط الصورة</label><input type="text" id="newCatImg"></div>
+                        
+                        <div class="form-group">
+                            <label>تحديد مسار القسم (اختر بالتتابع، أو اتركه فارغاً لجعله قسماً رئيسياً):</label>
+                            <div id="adminNewCatContainer" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                            <input type="hidden" id="newCatParentId" value="">
+                        </div>
+
+                        <div class="form-group"><label>نوع المحتوى الداخلي للقسم</label>
+                            <select id="newCatType">
+                                <option value="sub">يحتوي أقسام فرعية بالداخل</option>
+                                <option value="dictionary">يحتوي كلمات ومعجم وترجمة</option>
+                                <option value="lessons">يحتوي دروس وقواعد شروحات</option>
+                                <option value="text_image">يحتوي مادة نصية وصورة مباشرة</option>
+                            </select>
+                        </div>
+                        <button class="submit-btn" onclick="submitCategory()">حفظ ونشر القسم</button>
+                    </div>
+
+                    <div class="form-card">
+                        <h3>تحديث نصوص التطبيق والإعلانات</h3>
+                        <div class="form-group"><label>نص "من نحن" والوصف الأسفل</label><textarea id="setAboutText" rows="3"></textarea></div>
+                        <div class="form-group"><label>نص الشريط الإعلاني المتحرك</label><input type="text" id="setAnnounceText"></div>
+                        <button class="submit-btn" onclick="submitSettings()">تحديث الإعدادات العامة</button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>الترجمة</label>
-                    <input type="text" id="cTrans">
+
+                <div class="form-card">
+                    <h3>إضافة محتوى جديد (ترجمات أو دروس)</h3>
+                    
+                    <div class="form-group">
+                        <label>اختر القسم التابع له (اختر بالتتابع):</label>
+                        <div id="adminCategoryContainer" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                        <input type="hidden" id="contentCatId" required>
+                    </div>
+
+                    <div class="form-group"><label>نوع المادة</label>
+                        <select id="contentTypeSelect" onchange="adjustFormFields()">
+                            <option value="word">مصطلح وقاموس معجمي</option>
+                            <option value="lesson">درس وقواعد تعليمية</option>
+                            <option value="article">مقال ونص وصورة مباشرة</option>
+                        </select>
+                    </div>
+                    <div id="formWordFields">
+                        <div class="form-group"><label>الكلمة (English / تيفيناغ)</label><input type="text" id="fWord"></div>
+                        <div class="form-group"><label>الترجمة (العربية)</label><input type="text" id="fTrans"></div>
+                        <div class="form-group"><label>المفرد (Singular)</label><input type="text" id="fSing"></div>
+                        <div class="form-group"><label>الجمع (Plural)</label><input type="text" id="fPlur"></div>
+                        <div class="form-group"><label>حالة وموقع الكلمة (اسم / فعل / صفة)</label><input type="text" id="fState"></div>
+                    </div>
+                    <div class="form-group"><label>الجملة والمثال التوضيحي</label><textarea id="fExample" rows="2"></textarea></div>
+                    <div class="form-group"><label>رابط الصورة المرفقة</label><input type="text" id="fImg"></div>
+                    <div class="form-group"><label>النص الإضافي الشامل والتنسيق</label><textarea id="fAdditional" rows="4" placeholder="اكتب هنا الشروحات الإضافية..."></textarea></div>
+                    <button class="submit-btn" onclick="submitContent()">نشر وحفظ المادة بالمخزن</button>
                 </div>
-                <div class="form-group">
-                    <label>رابط الصورة</label>
-                    <input type="text" id="cImg">
-                </div>
-                <button class="submit-btn" onclick="submitContent()">حفظ المحتوى</button>
             </div>
         </div>
+
+        <div id="pageAbout" class="app-page">
+            <div class="static-page-card">
+                <h3>من نحن</h3>
+                <p id="aboutPageTextContainer">نحن منصة تعليمية متطورة تهدف لتبسيط المفاهيم والمصطلحات واللغات وتوفير مرجع متكامل للدارسين والمحبين للمعرفة.</p>
+            </div>
+        </div>
+
+        <div id="pageContact" class="app-page">
+            <div class="static-page-card">
+                <h3>اتصل بنا</h3>
+                <p>يسعدنا تواصلكم واستفساراتكم ومقترحاتكم لتطوير العمل دائماً.</p>
+                <div style="margin-top:20px; font-size: 18px; color: var(--accent); font-weight: bold;">
+                    <p><i class="fas fa-envelope"></i> support@mydomain.com</p>
+                    <p><i class="fab fa-whatsapp"></i> +123456789</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="details-page" id="detailsPagePopup">
-        <div class="details-content-wrap">
-            <div class="details-header">
-                <button class="close-btn" onclick="closeDetailsPage()"><i class="fa-solid fa-times"></i></button>
-                <div class="details-main-row">
-                    <div class="details-word" id="dPopupWord"></div>
-                    <div class="details-trans" id="dPopupTrans"></div>
-                </div>
+        <div class="app-header">
+            <div class="header-side-btn" onclick="closeDetailsPage()"><i class="fas fa-arrow-right"></i></div>
+            <div style="font-weight:bold;">تفاصيل المصطلح المعجمي</div>
+            <div class="header-side-btn"></div>
+        </div>
+        <div class="details-content">
+            <img src="" id="dPopupImg" class="details-img" style="display:none;">
+            <div class="details-main-row">
+                <div class="details-word" id="dPopupWord">Word</div>
+                <div class="details-trans" id="dPopupTrans">الترجمة العربية</div>
             </div>
-            <div class="details-body">
-                <img id="dPopupImg" class="details-img" src="" style="display:none;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                    <div class="info-pill">المفرد <span id="dPopupSing">-</span></div>
-                    <div class="info-pill">الجمع <span id="dPopupPlur">-</span></div>
-                    <div class="info-pill" style="grid-column: 1/3;">القاعدة <span id="dPopupState">-</span></div>
-                </div>
+            
+            <div class="details-grid-info" id="dPopupGridInfo">
+                <div class="info-pill">المفرد: <span id="dPopupSing">-</span></div>
+                <div class="info-pill">الجمع: <span id="dPopupPlur">-</span></div>
+                <div class="info-pill" style="grid-column: 1/3;">حالة الكلمة وقواعدها: <span id="dPopupState">-</span></div>
+            </div>
+
+            <div class="details-divider"></div>
+            
+            <div class="section-box" id="dPopupExBox">
+                <h5>جملة ومثال توضيحي (Example):</h5>
+                <p id="dPopupExText" style="direction: ltr; text-align: left;"></p>
+            </div>
+            
+            <div class="section-box" id="dPopupAddBox">
+                <h5>شروحات وملاحظات إضافية:</h5>
+                <p id="dPopupAddText" style="white-space: pre-line;"></p>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <a class="nav-item active" id="navHomeBtn" onclick="switchTab('home')">
-            <i class="fa-solid fa-house"></i> الرئيسية
-        </a>
-        <a class="nav-item" id="navDictBtn" onclick="setGlobalSearch('dictionary')">
-            <i class="fa-solid fa-book"></i> المعجم
-        </a>
-        <a class="nav-item" id="navLoginBtn" onclick="switchTab('login')">
-            <i class="fa-solid fa-gear"></i> الإدارة
-        </a>
-    </nav>
+    <div class="bottom-nav">
+        <div class="nav-item active" id="navHomeBtn" onclick="switchTab('home')"><i class="fas fa-search"></i><span>البحث</span></div>
+        <div class="nav-item" onclick="setGlobalSearch('dictionary')"><i class="fas fa-book"></i><span>المعجم</span></div>
+        <div class="nav-item" onclick="setGlobalSearch('lessons')"><i class="fas fa-graduation-cap"></i><span>الدروس</span></div>
+    </div>
 
     <script>
-        const scriptURL = "https://script.google.com/macros/s/AKfycbwhvU7ZWpSNQn7zuo5TXCAg77bHMM0sdQGBPgeLY1FjUvMybR5NqTHm7YxY5mHYOp2X6g/exec"; // استبدل برابط التطبيق الخاص بك
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwhvU7ZWpSNQn7zuo5TXCAg77bHMM0sdQGBPgeLY1FjUvMybR5NqTHm7YxY5mHYOp2X6g/exec";
+
         let dbCategories = [];
         let dbContent = [];
         let navigationHistory = [];
         let currentCategoryContext = null;
+        let currentUserRole = null;
 
-        window.onload = function() { loadCloudData(); };
+        window.onload = function() {
+            loadCloudData();
+        };
 
         function loadCloudData() {
-            // محاكاة الاتصال أو استخدام Fetch الحقيقي (استبدل الرابط برابطك) [cite: 235]
             fetch(scriptURL + "?action=loadAll")
             .then(res => res.json())
             .then(data => {
-                dbCategories = data.categories || [];
-                dbContent = data.content || [];
-                renderMainGrid(dbCategories.filter(c => !c.parentId));
+                dbCategories = data.categories;
+                dbContent = data.content;
+                
+                let about = data.settings.find(s => s.key === "about_text");
+                let announce = data.settings.find(s => s.key === "announcement");
+                
+                if(about) {
+                    document.getElementById("aboutTextMain").innerText = about.value;
+                    document.getElementById("setAboutText").value = about.value;
+                    document.getElementById("aboutPageTextContainer").innerText = about.value;
+                }
+                if(announce && announce.value.trim() !== "") {
+                    document.getElementById("tickerWrap").style.display = "block";
+                    document.getElementById("tickerText").innerText = announce.value;
+                    document.getElementById("setAnnounceText").value = announce.value;
+                } else {
+                    document.getElementById("tickerWrap").style.display = "none";
+                }
+
+                renderMainGrid(dbCategories.filter(c => !c.parentId || c.parentId === "null" || c.parentId === ""));
+                prepareAdminCategoryDropdowns(); 
+                prepareAdminNewCatDropdowns();
             }).catch(err => {
-                document.getElementById("mainCategoriesGrid").innerHTML = "<div class='loading-text'>فشل الاتصال بقاعدة البيانات. يرجى التأكد من الرابط.</div>";
+                document.getElementById("mainCategoriesGrid").innerHTML = "<p style='grid-column:1/3; text-align:center; color:var(--text-sub);'>فشل الاتصال بقاعدة البيانات السحابية.</p>";
             });
         }
 
-        /* --- واجهة المستخدم الرئيسية والتنقل --- */
+        /* ==========================================
+           1. نظام القوائم الشجرية لإضافة المحتوى 
+           ========================================== */
+        function prepareAdminCategoryDropdowns() {
+            const container = document.getElementById('adminCategoryContainer');
+            if (!container) return;
+            container.innerHTML = ''; 
+            document.getElementById('contentCatId').value = ''; 
+            buildNextLevelDropdown("");
+        }
+
+        function buildNextLevelDropdown(parentId) {
+            if (!dbCategories) return;
+            const childCategories = dbCategories.filter(cat => {
+                if (parentId === "") {
+                    return !cat.parentId || cat.parentId === "null" || cat.parentId === "" || cat.parentId == 0;
+                }
+                return cat.parentId == parentId;
+            });
+
+            if (childCategories.length === 0) return; 
+
+            const container = document.getElementById('adminCategoryContainer');
+            const select = document.createElement('select');
+            select.className = 'dynamic-admin-cat';
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = parentId === "" ? '-- اختر القسم الرئيسي --' : '-- اختر القسم الفرعي التالي (إن وجد) --';
+            select.appendChild(defaultOption);
+
+            childCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id; 
+                option.textContent = cat.title; 
+                select.appendChild(option);
+            });
+
+            select.onchange = function() {
+                while (select.nextSibling) {
+                    container.removeChild(select.nextSibling);
+                }
+                const selectedId = select.value;
+                if (selectedId) {
+                    document.getElementById('contentCatId').value = selectedId;
+                    buildNextLevelDropdown(selectedId);
+                } else {
+                    rollbackToPreviousCategory(select);
+                }
+            };
+            container.appendChild(select);
+        }
+
+        function rollbackToPreviousCategory(currentSelect) {
+            const container = document.getElementById('adminCategoryContainer');
+            const dropdowns = container.getElementsByClassName('dynamic-admin-cat');
+            let index = Array.prototype.indexOf.call(dropdowns, currentSelect);
+            if (index > 0) {
+                document.getElementById('contentCatId').value = dropdowns[index - 1].value;
+            } else {
+                document.getElementById('contentCatId').value = '';
+            }
+        }
+
+        /* ==========================================
+           2. نظام القوائم الشجرية لإضافة قسم جديد 
+           ========================================== */
+        function prepareAdminNewCatDropdowns() {
+            const container = document.getElementById('adminNewCatContainer');
+            if (!container) return;
+            container.innerHTML = ''; 
+            document.getElementById('newCatParentId').value = ''; 
+            buildNextLevelNewCatDropdown("");
+        }
+
+        function buildNextLevelNewCatDropdown(parentId) {
+            if (!dbCategories) return;
+            const childCategories = dbCategories.filter(cat => {
+                let isMatch = false;
+                if (parentId === "") {
+                    isMatch = !cat.parentId || cat.parentId === "null" || cat.parentId === "" || cat.parentId == 0;
+                } else {
+                    isMatch = cat.parentId == parentId;
+                }
+                return isMatch && cat.contentType === 'sub'; 
+            });
+
+            if (childCategories.length === 0) return; 
+
+            const container = document.getElementById('adminNewCatContainer');
+            const select = document.createElement('select');
+            select.className = 'dynamic-admin-cat';
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = parentId === "" ? '-- قسم رئيسي (بدون أب) --' : '-- اختر القسم الفرعي التالي --';
+            select.appendChild(defaultOption);
+
+            childCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id; 
+                option.textContent = cat.title; 
+                select.appendChild(option);
+            });
+
+            select.onchange = function() {
+                while (select.nextSibling) {
+                    container.removeChild(select.nextSibling);
+                }
+                const selectedId = select.value;
+                if (selectedId) {
+                    document.getElementById('newCatParentId').value = selectedId;
+                    buildNextLevelNewCatDropdown(selectedId);
+                } else {
+                    rollbackToPreviousNewCat(select);
+                }
+            };
+            container.appendChild(select);
+        }
+
+        function rollbackToPreviousNewCat(currentSelect) {
+            const container = document.getElementById('adminNewCatContainer');
+            const dropdowns = container.getElementsByClassName('dynamic-admin-cat');
+            let index = Array.prototype.indexOf.call(dropdowns, currentSelect);
+            if (index > 0) {
+                document.getElementById('newCatParentId').value = dropdowns[index - 1].value;
+            } else {
+                document.getElementById('newCatParentId').value = ''; 
+            }
+        }
+
+        /* ==========================================
+           3. دوال عرض البيانات والمحرك 
+           ========================================== */
         function renderMainGrid(categories) {
             let grid = document.getElementById("mainCategoriesGrid");
             grid.innerHTML = "";
-            if(categories.length === 0) { grid.innerHTML = "<div class='loading-text'>لا توجد أقسام حالياً.</div>"; return; }
-            
+            if(categories.length === 0) {
+                grid.innerHTML = "<p style='grid-column:1/3; text-align:center; color:var(--text-sub);'>لا توجد أقسام عامة حالياً.</p>";
+                return;
+            }
             categories.forEach(cat => {
-                let imgHtml = cat.image ? `<img src="${cat.image}">` : `<div style="height:120px; background:#e2e8f0; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-folder fa-2x" style="color:#94a3b8;"></i></div>`;
+                let imgHtml = cat.image ? `<img src="${cat.image}">` : `<img src="https://via.placeholder.com/150/e2e8f0/64748b?text=${cat.title}">`;
                 grid.innerHTML += `
                     <div class="cat-card" onclick="handleCategoryClick('${cat.id}', '${cat.title}', '${cat.contentType}')">
                         ${imgHtml}
@@ -349,8 +548,7 @@
         function handleCategoryClick(id, title, type) {
             navigationHistory.push({view: currentCategoryContext ? 'sub' : 'home', id: currentCategoryContext?.id, title: currentCategoryContext?.title});
             currentCategoryContext = { id: id, title: title, type: type };
-            
-            document.getElementById("headerBackBtn").style.display = "block";
+            document.getElementById("headerBackBtn").querySelector("i").style.display = "block";
             document.getElementById("headerTitle").innerText = title;
             switchTab('sub');
             buildSubPageContent();
@@ -359,12 +557,14 @@
         function buildSubPageContent() {
             let area = document.getElementById("subContentArea");
             area.innerHTML = "";
+            document.getElementById("subSearchWrapper").style.display = "block";
+
             if (currentCategoryContext.type === "sub") {
                 let subCats = dbCategories.filter(c => String(c.parentId) === String(currentCategoryContext.id));
                 area.className = "grid-container";
-                if(subCats.length === 0) { area.innerHTML = "<div class='loading-text'>لا توجد أقسام فرعية هنا.</div>"; return; }
+                if(subCats.length === 0) { area.innerHTML = "<p style='grid-column:1/3; text-align:center;'>لا توجد أقسام فرعية داخلية مضافة.</p>"; return; }
                 subCats.forEach(cat => {
-                    let imgHtml = cat.image ? `<img src="${cat.image}">` : `<div style="height:120px; background:#e2e8f0; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-folder-open fa-2x" style="color:#94a3b8;"></i></div>`;
+                    let imgHtml = cat.image ? `<img src="${cat.image}">` : `<img src="https://via.placeholder.com/150/e2e8f0/64748b?text=${cat.title}">`;
                     area.innerHTML += `
                         <div class="cat-card" onclick="handleCategoryClick('${cat.id}', '${cat.title}', '${cat.contentType}')">
                             ${imgHtml}
@@ -374,159 +574,289 @@
             } else {
                 area.className = "";
                 let items = dbContent.filter(c => String(c.catId) === String(currentCategoryContext.id));
-                if(items.length === 0) { area.innerHTML = "<div class='loading-text'>هذا القسم لا يحتوي على مواد.</div>"; return; }
+                if(items.length === 0) { area.innerHTML = "<p style='text-align:center; color:var(--text-sub);'>هذا القسم لا يحتوي على مواد حالياً.</p>"; return; }
                 items.forEach(item => {
-                    area.innerHTML += `
-                        <div class="item-list-card" onclick='openDetailsPage(${JSON.stringify(item).replace(/'/g, "&#39;")})'>
-                            <div>
-                                <h4>${item.word}</h4>
-                                <p>${item.translation}</p>
-                            </div>
-                            <i class="fa-solid fa-chevron-left" style="color: var(--border);"></i>
-                        </div>`;
+                    if (currentCategoryContext.type === "dictionary") {
+                        area.innerHTML += `
+                            <div class="item-list-card" onclick='openDetailsPage(${JSON.stringify(item).replace(/'/g, "&#39;")})'>
+                                <div><h4>${item.word}</h4><p>${item.translation}</p></div>
+                                <i class="fas fa-chevron-left" style="color:var(--text-sub);"></i>
+                            </div>`;
+                    } else {
+                        let imgTag = item.image ? `<img src="${item.image}" style="width:100%; max-height:150px; object-fit:cover; border-radius:12px; margin-bottom:15px;">` : '';
+                        area.innerHTML += `
+                            <div class="form-card" onclick="incrementViewCount('${item.id}')">
+                                ${imgTag}
+                                <h3 style="margin-top:0; color:var(--accent);">${item.word || item.translation}</h3>
+                                <p style="white-space: pre-line; line-height:1.6;">${item.additionalText || item.example || ''}</p>
+                                <small style="color:var(--text-sub); display:block; margin-top:10px;"><i class="fas fa-eye"></i> المشاهدات: ${item.views || 0}</small>
+                            </div>`;
+                    }
                 });
             }
         }
 
+        /* ==========================================
+           4. دوال الفلترة والبحث المفقودة
+           ========================================== */
+        function filterSubContent() {
+            let q = document.getElementById("subSearchInput").value.toLowerCase().trim();
+            if(currentCategoryContext.type === "sub") {
+                let subCats = dbCategories.filter(c => String(c.parentId) === String(currentCategoryContext.id));
+                let filtered = subCats.filter(c => c.title.toLowerCase().includes(q));
+                renderSubGridOnly(filtered);
+            } else {
+                let items = dbContent.filter(c => String(c.catId) === String(currentCategoryContext.id));
+                let filtered = items.filter(i => (i.word && i.word.toLowerCase().includes(q)) || (i.translation && i.translation.toLowerCase().includes(q)));
+                renderSubListOnly(filtered);
+            }
+        }
+
+        function renderSubGridOnly(cats) {
+            let area = document.getElementById("subContentArea");
+            area.innerHTML = "";
+            cats.forEach(cat => {
+                let imgHtml = cat.image ? `<img src="${cat.image}">` : `<img src="https://via.placeholder.com/150/e2e8f0/64748b?text=${cat.title}">`;
+                area.innerHTML += `
+                    <div class="cat-card" onclick="handleCategoryClick('${cat.id}', '${cat.title}', '${cat.contentType}')">
+                        ${imgHtml}
+                        <h3>${cat.title}</h3>
+                    </div>`;
+            });
+        }
+
+        function renderSubListOnly(items) {
+            let area = document.getElementById("subContentArea");
+            area.innerHTML = "";
+            items.forEach(item => {
+                if (currentCategoryContext.type === "dictionary") {
+                    area.innerHTML += `
+                        <div class="item-list-card" onclick='openDetailsPage(${JSON.stringify(item).replace(/'/g, "&#39;")})'>
+                            <div><h4>${item.word}</h4><p>${item.translation}</p></div>
+                            <i class="fas fa-chevron-left" style="color:var(--text-sub);"></i>
+                        </div>`;
+                } else {
+                    let imgTag = item.image ? `<img src="${item.image}" style="width:100%; max-height:150px; object-fit:cover; border-radius:12px; margin-bottom:15px;">` : '';
+                    area.innerHTML += `
+                        <div class="form-card" onclick="incrementViewCount('${item.id}')">
+                            ${imgTag}
+                            <h3 style="margin-top:0; color:var(--accent);">${item.word || item.translation}</h3>
+                            <p style="white-space: pre-line;">${item.additionalText || item.example || ''}</p>
+                            <small style="color:var(--text-sub); display:block; margin-top:10px;"><i class="fas fa-eye"></i> المشاهدات: ${item.views || 0}</small>
+                        </div>`;
+                }
+            });
+        }
+
+        function triggerGlobalSearch() {
+            let q = document.getElementById("mainSearchInput").value.toLowerCase().trim();
+            let grid = document.getElementById("mainCategoriesGrid");
+            if(!q) { 
+                grid.className = "grid-container";
+                renderMainGrid(dbCategories.filter(c => !c.parentId || c.parentId === "null" || c.parentId === "")); 
+                return; 
+            }
+            grid.innerHTML = "";
+            grid.className = ""; // إزالة الشبكة لعرضها كلستة
+            let filteredItems = dbContent.filter(i => (i.word && i.word.toLowerCase().includes(q)) || (i.translation && i.translation.toLowerCase().includes(q)));
+            if(filteredItems.length === 0) { 
+                grid.innerHTML = "<p style='text-align:center; color:var(--text-sub);'>لا توجد نتائج مطابقة للبحث الشامل.</p>"; 
+                return; 
+            }
+            filteredItems.forEach(item => {
+                grid.innerHTML += `
+                    <div class="item-list-card" onclick='openDetailsPage(${JSON.stringify(item).replace(/'/g, "&#39;")})'>
+                        <div>
+                            <h4>${item.word || item.translation}</h4>
+                            <p>${item.translation || ''} <span style="color:var(--accent); font-size:12px;">(${item.type === 'word' ? 'معجم' : 'درس'})</span></p>
+                        </div>
+                        <i class="fas fa-chevron-left" style="color:var(--text-sub);"></i>
+                    </div>`;
+            });
+        }
+
+        function setGlobalSearch(type) {
+            switchTab('home');
+            let foundCat = dbCategories.find(c => c.contentType === type);
+            if(foundCat) {
+                handleCategoryClick(foundCat.id, foundCat.title, foundCat.contentType);
+            } else {
+                alert("لم يتم إنشاء أقسام مخصصة لهذا النوع السحابي بعد من لوحة التحكم.");
+            }
+        }
+
+        /* ==========================================
+           5. النوافذ المنبثقة والتنقل
+           ========================================== */
         function openDetailsPage(item) {
+            if(item.id) incrementViewCount(item.id);
             document.getElementById("dPopupWord").innerText = item.word || '-';
             document.getElementById("dPopupTrans").innerText = item.translation || '-';
-            document.getElementById("dPopupSing").innerText = item.singular || '-';
-            document.getElementById("dPopupPlur").innerText = item.plural || '-';
-            document.getElementById("dPopupState").innerText = item.wordState || '-';
             
             if(item.image) {
                 document.getElementById("dPopupImg").src = item.image;
                 document.getElementById("dPopupImg").style.display = "block";
-            } else {
-                document.getElementById("dPopupImg").style.display = "none";
-            }
+            } else { document.getElementById("dPopupImg").style.display = "none"; }
+            
+            document.getElementById("dPopupSing").innerText = item.singular || '-';
+            document.getElementById("dPopupPlur").innerText = item.plural || '-';
+            document.getElementById("dPopupState").innerText = item.wordState || '-';
+            
+            if(item.example) {
+                document.getElementById("dPopupExText").innerText = item.example;
+                document.getElementById("dPopupExBox").style.display = "block";
+            } else { document.getElementById("dPopupExBox").style.display = "none"; }
+            
+            if(item.additionalText) {
+                document.getElementById("dPopupAddText").innerText = item.additionalText;
+                document.getElementById("dPopupAddBox").style.display = "block";
+            } else { document.getElementById("dPopupAddBox").style.display = "none"; }
+            
             document.getElementById("detailsPagePopup").style.display = "flex";
         }
 
-        function closeDetailsPage() {
-            document.getElementById("detailsPagePopup").style.display = "none";
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            let page = document.getElementById('page' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
-            if(page) page.classList.add('active');
-
-            if(tabId === 'home') {
-                document.getElementById("navHomeBtn").classList.add('active');
-                document.getElementById("headerTitle").innerText = "الرئيسية";
-                document.getElementById("headerBackBtn").style.display = "none";
-                navigationHistory = [];
-                currentCategoryContext = null;
-            } else if (tabId === 'login') {
-                document.getElementById("navLoginBtn").classList.add('active');
-                document.getElementById("headerTitle").innerText = "لوحة التحكم";
-            }
-        }
+        function closeDetailsPage() { document.getElementById("detailsPagePopup").style.display = "none"; }
 
         function goBack() {
             if(navigationHistory.length > 0) {
                 let prev = navigationHistory.pop();
                 currentCategoryContext = prev.id ? { id: prev.id, title: prev.title, type: dbCategories.find(c => String(c.id) === String(prev.id))?.contentType } : null;
                 if(!currentCategoryContext) {
+                    document.getElementById("headerBackBtn").querySelector("i").style.display = "none";
+                    document.getElementById("headerTitle").innerText = "الرئيسية";
                     switchTab('home');
-                    renderMainGrid(dbCategories.filter(c => !c.parentId));
+                    renderMainGrid(dbCategories.filter(c => !c.parentId || c.parentId === "null" || c.parentId === ""));
                 } else {
                     document.getElementById("headerTitle").innerText = currentCategoryContext.title;
                     buildSubPageContent();
                 }
             } else {
+                document.getElementById("headerBackBtn").querySelector("i").style.display = "none";
                 switchTab('home');
             }
         }
 
-        /* --- لوحة الإدارة والقوائم الشجرية اللانهائية --- */
-        function handleLogin() {
-            // محاكاة تسجيل الدخول للسرعة (في الكود الفعلي يتم عبر السيرفر)
-            document.getElementById("loginCard").style.display = "none";
-            document.getElementById("adminPanel").style.display = "block";
-            prepareAdminCategoryDropdowns(); // استدعاء دالة توليد قوائم المحتوى
-            prepareAdminNewCatDropdowns();   // استدعاء دالة توليد قوائم الأقسام
-        }
-
-        // 1. نظام القوائم الديناميكية لإضافة المحتوى (عمق لانهائي)
-        function prepareAdminCategoryDropdowns() {
-            let container = document.getElementById("contentCatContainer");
-            container.innerHTML = ""; 
-            document.getElementById("contentCatId").value = ""; 
-            createDynamicDropdown(container, "contentCatId", null, false);
-        }
-
-        // 2. نظام القوائم الديناميكية لإضافة قسم جديد (تصفية sub فقط)
-        function prepareAdminNewCatDropdowns() {
-            let container = document.getElementById("newCatParentContainer");
-            container.innerHTML = ""; 
-            document.getElementById("newCatParentId").value = ""; 
-            createDynamicDropdown(container, "newCatParentId", null, true);
-        }
-
-        // الدالة المركزية لتوليد القوائم
-        function createDynamicDropdown(container, targetInputId, parentId, filterSubOnly) {
-            let availableCats = dbCategories.filter(c => 
-                (parentId === null ? !c.parentId : String(c.parentId) === String(parentId))
-            );
-
-            if (filterSubOnly) {
-                availableCats = availableCats.filter(c => c.contentType === "sub");
-            }
-
-            if (availableCats.length === 0) return;
-
-            let selectWrapper = document.createElement("div");
-            selectWrapper.className = "form-group dynamic-dropdown";
+        function switchTab(tabId) {
+            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            let page = document.getElementById('page' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+            if(page) page.classList.add('active');
             
-            let selectElement = document.createElement("select");
-            selectElement.innerHTML = `<option value="">-- اختر القسم --</option>`;
+            let btnIcons = { 'home': "الرئيسية", 'login': "لوحة التحكم", 'about': "من نحن", 'contact': "اتصل بنا" };
+            if(btnIcons[tabId]) document.getElementById("headerTitle").innerText = btnIcons[tabId];
             
-            availableCats.forEach(cat => {
-                let opt = document.createElement("option");
-                opt.value = cat.id;
-                opt.innerText = cat.title;
-                selectElement.appendChild(opt);
-            });
-
-            selectElement.onchange = function() {
-                // حفظ المعرف الأخير
-                document.getElementById(targetInputId).value = this.value;
-                
-                // حذف أي قوائم منسدلة ولدت بعد هذه القائمة
-                while (selectWrapper.nextElementSibling && selectWrapper.nextElementSibling.classList.contains('dynamic-dropdown')) {
-                    selectWrapper.nextElementSibling.remove();
-                }
-
-                // توليد القائمة الفرعية التالية إذا تم اختيار قسم
-                if (this.value !== "") {
-                    createDynamicDropdown(container, targetInputId, this.value, filterSubOnly);
-                } else if (parentId) {
-                    document.getElementById(targetInputId).value = parentId; // التراجع للأب
-                }
-            };
-
-            selectWrapper.appendChild(selectElement);
-            container.appendChild(selectWrapper);
-        }
-
-        function toggleTheme() {
-            let root = document.documentElement;
-            if(root.style.getPropertyValue('--bg') === '#0f172a') {
-                root.style.setProperty('--bg', '#f4f7f6');
-                root.style.setProperty('--card-bg', '#ffffff');
-                root.style.setProperty('--text-main', '#1e293b');
-                root.style.setProperty('--border', '#e2e8f0');
+            if(tabId === 'home') {
+                document.getElementById("navHomeBtn").classList.add('active');
+                document.getElementById("headerBackBtn").querySelector("i").style.display = "none";
+                navigationHistory = []; currentCategoryContext = null;
+                document.getElementById("mainCategoriesGrid").className = "grid-container";
             } else {
-                root.style.setProperty('--bg', '#0f172a');
-                root.style.setProperty('--card-bg', '#1e293b');
-                root.style.setProperty('--text-main', '#f8fafc');
-                root.style.setProperty('--border', '#334155');
+                document.getElementById("headerBackBtn").querySelector("i").style.display = "none";
             }
+        }
+
+        function toggleSidebar() {
+            let sidebar = document.getElementById('sidebar');
+            let overlay = document.getElementById('overlay');
+            if(sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open'); overlay.style.display = 'none';
+            } else {
+                sidebar.classList.add('open'); overlay.style.display = 'block';
+            }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            toggleSidebar();
+        }
+
+        /* ==========================================
+           6. دوال لوحة الإدارة (تعمل وترسل البيانات للسيرفر)
+           ========================================== */
+        function handleLogin() {
+            let user = document.getElementById("loginUser").value;
+            let pass = document.getElementById("loginPass").value;
+            if(user === "admin" && pass === "1234") {
+                document.getElementById("loginFormCard").style.display = "none";
+                document.getElementById("controlPanel").style.display = "block";
+                document.getElementById("adminOnlyFields").style.display = "block";
+                document.getElementById("userRoleBadge").innerText = "الصلاحية: مدير عام";
+            } else if (user === "halim" && pass === "0") {
+                document.getElementById("loginFormCard").style.display = "none";
+                document.getElementById("controlPanel").style.display = "block";
+                document.getElementById("adminOnlyFields").style.display = "none";
+                document.getElementById("userRoleBadge").innerText = "الصلاحية: عضو (إضافة محتوى فقط)";
+            } else {
+                alert("بيانات الدخول غير صحيحة!");
+            }
+        }
+
+        function adjustFormFields() {
+            let type = document.getElementById("contentTypeSelect").value;
+            if(type === "word") {
+                document.getElementById("formWordFields").style.display = "block";
+            } else {
+                document.getElementById("formWordFields").style.display = "none";
+            }
+        }
+
+        function incrementViewCount(id) {
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "incrementView", id: id }) });
+        }
+
+        function submitCategory() {
+            let title = document.getElementById("newCatTitle").value;
+            let img = document.getElementById("newCatImg").value;
+            let parentId = document.getElementById("newCatParentId").value;
+            let type = document.getElementById("newCatType").value;
+            if(!title) return alert("يرجى إدخال اسم القسم");
+            
+            document.getElementById("newCatTitle").value = "جاري الإرسال...";
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "addCategory", title: title, image: img, parentId: parentId, contentType: type })
+            }).then(res => res.json()).then(data => {
+                alert("تمت إضافة القسم بنجاح! يرجى تحديث الصفحة لرؤيته.");
+                document.getElementById("newCatTitle").value = "";
+            });
+        }
+
+        function submitSettings() {
+            let about = document.getElementById("setAboutText").value;
+            let announce = document.getElementById("setAnnounceText").value;
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "updateSettings", aboutText: about, announcement: announce })
+            }).then(res => res.json()).then(data => {
+                alert("تم تحديث الإعدادات والنصوص بنجاح!");
+            });
+        }
+
+        function submitContent() {
+            let catId = document.getElementById("contentCatId").value;
+            let type = document.getElementById("contentTypeSelect").value;
+            let word = document.getElementById("fWord").value;
+            let trans = document.getElementById("fTrans").value;
+            let sing = document.getElementById("fSing").value;
+            let plur = document.getElementById("fPlur").value;
+            let state = document.getElementById("fState").value;
+            let ex = document.getElementById("fExample").value;
+            let img = document.getElementById("fImg").value;
+            let add = document.getElementById("fAdditional").value;
+            
+            if(!catId) return alert("يرجى اختيار القسم التابع له بشكل صحيح من القوائم");
+            
+            document.getElementById("fWord").value = "جاري الإرسال...";
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: "addContent", catId: catId, type: type, word: word, translation: trans,
+                    singular: sing, plural: plur, wordState: state, example: ex, image: img, additionalText: add
+                })
+            }).then(res => res.json()).then(data => {
+                alert("تمت إضافة المادة بنجاح! يرجى تحديث الصفحة لرؤيتها.");
+                document.getElementById("fWord").value = ""; document.getElementById("fTrans").value = "";
+            });
         }
     </script>
 </body>
